@@ -308,13 +308,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .browser__view { position: relative; flex: 1; overflow: hidden; }
 .browser__view img { width: 100%; height: auto; transform: translateY(0); transition: transform 5.5s var(--ease-io); }
 .case:hover .browser__view img, .case:focus-within .browser__view img { transform: translateY(calc(-100% + var(--view-h, 20rem))); }
-/* Phone mockup: thin bezel, glass edge, dynamic island, screen at the real 390:844 ratio */
-.phone { position: relative; aspect-ratio: 408 / 862; padding: 2.4% 2.8%; border-radius: 16% / 7.6%; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 0 3px #050505, 0 28px 60px -18px rgba(0,0,0,0.65), 0 8px 18px -8px rgba(0,0,0,0.5); }
-.phone__screen { position: relative; width: 100%; height: 100%; border-radius: 13% / 6.2%; overflow: hidden; background: #000; }
-.phone__screen::after { content: ""; position: absolute; top: 1.6%; left: 50%; width: 30%; height: 3.4%; transform: translateX(-50%); border-radius: 999px; background: #000; box-shadow: 0 0 0 1px rgba(255,255,255,0.05); z-index: 2; }
+/* Phone mockup: fixed bezel around a screen at the iPhone's exact 390:844 ratio.
+   The screenshot is 1170x2532 (the same ratio), so it fills the screen edge to edge. */
+.phone { position: relative; display: flex; padding: 6px; border-radius: 30px; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), inset 0 0 0 3px #050505, 0 22px 44px -18px rgba(0,0,0,0.6); }
+.phone__screen { position: relative; height: 100%; width: auto; aspect-ratio: 390 / 844; border-radius: 24px; overflow: hidden; background: #000; }
+.phone__screen::after { content: ""; position: absolute; top: 1.6%; left: 50%; width: 30%; height: 3.3%; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
 .phone__screen img, .phone__screen video { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-.phone--float { position: absolute; right: 5%; bottom: -8%; width: 23%; transition: transform var(--d-slow) var(--ease-out); }
-.case:hover .phone--float { transform: translateY(-7%) rotate(-2deg); }
+/* Website case: browser and phone side by side, both fully inside the card, no overlap */
+.site-shot { position: absolute; inset: 0; display: flex; align-items: stretch; gap: 4%; padding: 5% 5% 5% 5%; background: radial-gradient(circle at 80% 60%, #26262A, var(--ink-2) 70%); }
+.site-shot .browser { position: relative; inset: auto; flex: 1 1 auto; min-width: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 22px 44px -20px rgba(0,0,0,0.6); }
+.phone--side { flex: none; height: 100%; transition: transform var(--d-slow) var(--ease-out); }
+.case:hover .phone--side { transform: translateY(-2%); }
+@media (max-width: 47.99rem) { .phone { padding: 4px; border-radius: 18px; } .phone__screen { border-radius: 14px; } }
 
 /* Fanned stack (thumbnails, magazine covers) */
 .fan { position: absolute; inset: 0; display: grid; place-items: center; }
