@@ -312,12 +312,26 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .browser__view { position: relative; flex: 1; overflow: hidden; }
 .browser__view img { width: 100%; height: auto; transform: translateY(0); transition: transform 5.5s var(--ease-io); }
 .case:hover .browser__view img, .case:focus-within .browser__view img { transform: translateY(calc(-100% + var(--view-h, 20rem))); }
-/* Phone mockup: fixed bezel around a screen at the iPhone's exact 390:844 ratio.
-   The screenshot is 1170x2532 (the same ratio), so it fills the screen edge to edge. */
-.phone { position: relative; display: block; padding: 6px; border-radius: 30px; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), inset 0 0 0 3px #050505, 0 22px 44px -18px rgba(0,0,0,0.6); }
-.phone__screen { position: relative; height: 100%; width: auto; aspect-ratio: 390 / 844; border-radius: 24px; overflow: hidden; background: #000; }
-.phone__screen::after { content: ""; position: absolute; top: 1.6%; left: 50%; width: 30%; height: 3.3%; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
-.phone__screen img, .phone__screen video { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+/* iPhone 15 Pro mockup, built to Apple's proportions and scaled from the phone's width:
+   device 416x870pt around a 390x844pt screen, titanium band, black bezel, display corners
+   55pt, dynamic island 126x37pt 11pt from the top, status bar 47pt with the page below it.
+   Percent padding is relative to width and the radii are split per axis so the corners stay
+   circular at any size. */
+.phone { position: relative; padding: 0.6%; border-radius: 16.4% / 7.85%; background: linear-gradient(135deg, #9C9994 0%, #5E5C58 18%, #3B3A38 50%, #6B6964 82%, #A9A6A0 100%); box-shadow: 0 26px 50px -20px rgba(0,0,0,0.7), 0 6px 14px -6px rgba(0,0,0,0.5); }
+.phone__bezel { padding: 1.62%; border-radius: 15.9% / 7.6%; background: #050505; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+.phone__screen { position: relative; container-type: inline-size; width: 100%; border-radius: 14.1% / 6.52%; overflow: hidden; background: #000; }
+.phone__status { display: flex; align-items: center; justify-content: space-between; aspect-ratio: 390 / 47; padding: 0 7.2cqw 0 10.5cqw; font: 600 4.3cqw/1 -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; letter-spacing: -0.01em; }
+.phone__screen--light .phone__status { background: #FFFFFF; color: #000; }
+.phone__screen--dark .phone__status { background: #0B0B0D; color: #FFF; }
+.phone__icons { width: 17.5cqw; height: auto; fill: currentColor; color: inherit; }
+.phone__island { position: absolute; top: 2.82cqw; left: 50%; width: 32.3cqw; aspect-ratio: 126 / 37; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
+.phone__view { aspect-ratio: 390 / 797; overflow: hidden; }
+.phone__view img, .phone__view video { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.phone__btn { position: absolute; width: 0.9%; background: linear-gradient(90deg, #6F6D69, #A4A19B); border-radius: 1px; }
+.phone__btn--action { left: -0.7%; top: 18.5%; height: 3.6%; }
+.phone__btn--vol-up { left: -0.7%; top: 25%; height: 7.2%; }
+.phone__btn--vol-down { left: -0.7%; top: 33.8%; height: 7.2%; }
+.phone__btn--power { right: -0.7%; top: 28%; height: 11%; }
 /* Website case: browser and phone side by side, both fully inside the card, no overlap.
    Everything is sized from the card's WIDTH (the one dimension every browser resolves the
    same way). --pw is the phone's width as a share of the card; it is chosen per card shape
@@ -327,8 +341,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .site-shot .browser { position: absolute; left: 5%; top: 6.5%; bottom: 6.5%; right: calc(5% + var(--pw) + 4%); border-radius: 6px; overflow: hidden; box-shadow: 0 22px 44px -20px rgba(0,0,0,0.6); }
 .phone--side { position: absolute; right: 5%; top: 50%; width: var(--pw); transform: translateY(-50%); transition: transform var(--d-slow) var(--ease-out); }
 .case:hover .phone--side { transform: translateY(-52%); }
-.phone--side .phone__screen { width: 100%; height: auto; }
-@media (max-width: 47.99rem) { .phone { padding: 4px; border-radius: 18px; } .phone__screen { border-radius: 14px; } }
 
 /* Fanned stack (thumbnails, magazine covers) */
 .fan { position: absolute; inset: 0; display: grid; place-items: center; }
