@@ -112,7 +112,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* ---------- Type ---------- */
 .display, .h-section, .h-title { font-family: var(--f-display); font-weight: 400; letter-spacing: var(--track-display); text-transform: none; }
 .display { font-size: var(--t-display); line-height: var(--lh-display); }
-.h-section { font-size: var(--t-section); line-height: var(--lh-display); text-wrap: balance; }
+.h-section { font-size: var(--t-section); line-height: 1; text-wrap: balance; }
 .h-title { font-size: var(--t-title); line-height: var(--lh-title); }
 .h-card { font-size: 1.25rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.005em; }
 .serif { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: 0; }
@@ -130,9 +130,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* Split-text masks (built by main.js) */
 .split-line { display: block; overflow: hidden; padding-bottom: 0.06em; margin-bottom: -0.06em; }
-.split-word { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.split-word { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.14em 0.08em 0.12em; margin: -0.14em -0.08em -0.12em; }
 .split-word > span, .split-char > span { display: inline-block; will-change: transform; }
-.split-char { display: inline-block; overflow: hidden; vertical-align: top; }
+.split-char { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.14em 0.03em 0.12em; margin: -0.14em -0.03em -0.12em; }
+/* Masks only exist while text is rising. Once it lands, glyphs render whole. */
+.is-split-done .split-word, .is-split-done .split-char { overflow: visible; }
 
 /* ---------- Buttons ---------- */
 .btn { --bg: var(--brick); --fg: var(--white); display: inline-flex; align-items: center; justify-content: center; gap: var(--s-3); min-height: 3.25rem; padding: 0 var(--s-5); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-weight: 600; font-size: var(--t-small); letter-spacing: 0.01em; text-decoration: none; border: 1px solid var(--bg); position: relative; overflow: hidden; isolation: isolate; transition: background var(--d-fast) var(--ease-out), border-color var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out); }
@@ -223,10 +225,11 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* ---------- Page hero (service pages) ---------- */
 .page-hero { background: var(--ink); color: var(--paper); padding-top: calc(var(--header-h) + var(--s-8)); padding-bottom: var(--section); position: relative; overflow: hidden; }
-.page-hero__title { font-family: var(--f-display); font-size: var(--t-display); line-height: 0.96; max-width: 14ch; text-wrap: balance; }
+.page-hero__title { font-family: var(--f-display); font-size: var(--t-display); line-height: 1.04; max-width: 14ch; text-wrap: balance; }
 .page-hero__grid { display: grid; gap: var(--s-6); margin-top: var(--s-6); }
 @media (min-width: 60rem) { .page-hero__grid { grid-template-columns: 1fr auto; align-items: end; } }
-.page-hero__bg { position: absolute; right: calc(-1 * var(--gutter)); bottom: -0.12em; font-family: var(--f-display); font-size: clamp(8rem, 30vw, 28rem); line-height: 0.8; color: var(--ink-2); white-space: nowrap; pointer-events: none; z-index: 0; }
+.page-hero__bg { position: absolute; left: var(--gutter); right: var(--gutter); bottom: var(--s-5); margin: 0; text-align: right; font-family: var(--f-display); font-size: clamp(5rem, 19vw, 22rem); line-height: 1; padding-top: 0.1em; color: var(--ink-2); white-space: nowrap; pointer-events: none; z-index: 0; }
+.page-hero__bg span { display: inline-block; }
 .page-hero .container { position: relative; z-index: 1; }
 
 /* ---------- Marquee ---------- */
@@ -263,7 +266,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .svc:hover .svc__name { transform: translateX(1.5rem); color: var(--paper); }
   .svc:hover .svc__price .arrow { transform: translateX(4px); }
 }
-.svc-preview { position: fixed; left: 0; top: 0; z-index: 30; width: 22rem; aspect-ratio: 4 / 3; pointer-events: none; border-radius: var(--radius-card); overflow: hidden; opacity: 0; transform: translate(-50%, -50%) scale(0.85); box-shadow: 0 30px 60px -20px rgba(0,0,0,0.5); display: none; }
+.svc-preview { position: fixed; left: 0; top: 0; z-index: 30; width: 17rem; aspect-ratio: 4 / 3; pointer-events: none; border-radius: var(--radius-card); overflow: hidden; visibility: hidden; box-shadow: 0 24px 48px -18px rgba(0,0,0,0.45); display: none; }
 .svc-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; clip-path: inset(100% 0 0 0); }
 .svc-preview img.is-on { clip-path: inset(0 0 0 0); }
 @media (hover: hover) and (min-width: 60rem) { .svc-preview { display: block; } }
@@ -305,9 +308,13 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .browser__view { position: relative; flex: 1; overflow: hidden; }
 .browser__view img { width: 100%; height: auto; transform: translateY(0); transition: transform 5.5s var(--ease-io); }
 .case:hover .browser__view img, .case:focus-within .browser__view img { transform: translateY(calc(-100% + var(--view-h, 20rem))); }
-.phone { position: absolute; right: 5%; bottom: -6%; width: 26%; aspect-ratio: 390 / 844; border-radius: 22px; border: 6px solid #0B0B0B; overflow: hidden; background: #0B0B0B; box-shadow: 0 24px 50px -14px rgba(0,0,0,0.6); transition: transform var(--d-slow) var(--ease-out); }
-.phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
-.case:hover .phone { transform: translateY(-6%) rotate(-2deg); }
+/* Phone mockup: thin bezel, glass edge, dynamic island, screen at the real 390:844 ratio */
+.phone { position: relative; aspect-ratio: 408 / 862; padding: 2.4% 2.8%; border-radius: 16% / 7.6%; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 0 3px #050505, 0 28px 60px -18px rgba(0,0,0,0.65), 0 8px 18px -8px rgba(0,0,0,0.5); }
+.phone__screen { position: relative; width: 100%; height: 100%; border-radius: 13% / 6.2%; overflow: hidden; background: #000; }
+.phone__screen::after { content: ""; position: absolute; top: 1.6%; left: 50%; width: 30%; height: 3.4%; transform: translateX(-50%); border-radius: 999px; background: #000; box-shadow: 0 0 0 1px rgba(255,255,255,0.05); z-index: 2; }
+.phone__screen img, .phone__screen video { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.phone--float { position: absolute; right: 5%; bottom: -8%; width: 23%; transition: transform var(--d-slow) var(--ease-out); }
+.case:hover .phone--float { transform: translateY(-7%) rotate(-2deg); }
 
 /* Fanned stack (thumbnails, magazine covers) */
 .fan { position: absolute; inset: 0; display: grid; place-items: center; }
@@ -318,8 +325,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* Video in phone */
 .video-card { position: absolute; inset: 0; display: grid; place-items: center; background: radial-gradient(circle at 50% 60%, #26262A, var(--ink-2) 70%); }
-.video-card .phone { position: relative; right: auto; bottom: auto; width: auto; height: 86%; }
-.video-card video { width: 100%; height: 100%; object-fit: cover; }
 .video-toggle { position: absolute; left: var(--s-4); bottom: var(--s-4); z-index: 2; min-height: 2.75rem; padding: 0 var(--s-4); border-radius: var(--radius); background: rgba(18,18,18,0.8); color: var(--paper); font-size: var(--t-caption); font-weight: 600; display: inline-flex; align-items: center; gap: var(--s-2); border: 1px solid var(--ink-3); }
 
 /* Cursor label for work cards (real cursor stays visible) */
@@ -420,7 +425,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* ---------- CTA ---------- */
 .cta { background: var(--ink); color: var(--paper); padding-block: var(--section); overflow: hidden; position: relative; }
-.cta__title { font-family: var(--f-display); font-size: clamp(3.25rem, 11vw, 10.5rem); line-height: 0.86; text-wrap: balance; }
+.cta__title { font-family: var(--f-display); font-size: clamp(3.25rem, 10vw, 9.5rem); line-height: 1.04; text-wrap: balance; }
 .cta__grid { display: grid; gap: var(--s-6); margin-top: var(--s-7); }
 @media (min-width: 60rem) { .cta__grid { grid-template-columns: 1fr auto; align-items: end; } }
 .cta__mail { font-size: var(--t-small); color: var(--muted-ink); }
@@ -467,3 +472,15 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 /* Fade the bottom of the portrait into the ground so the crop never reads as a hard edge */
 .hero__stage::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 3; background: linear-gradient(to top, var(--ink), transparent); pointer-events: none; }
 @media (max-width: 59.99rem) { .hero__stage { overflow: hidden; } }
+
+/* AIC: magazine covers and the video feature in one case */
+.aic-combo { position: absolute; inset: 0; display: grid; grid-template-columns: 1.6fr 1fr; padding-right: 4%; align-items: center; background: radial-gradient(circle at 70% 55%, #26262A, var(--ink-2) 70%); }
+.aic-combo .fan { position: relative; inset: auto; height: 100%; }
+.aic-combo .fan--covers .fan__item { width: 36%; }
+.aic-combo .fan { overflow: visible; }
+.aic-combo__video { display: grid; place-items: center; height: 100%; padding-block: 6%; }
+.video-frame { height: 84%; aspect-ratio: 816 / 1056; max-width: 92%; border-radius: 6px; overflow: hidden; background: #000; box-shadow: 0 24px 50px -16px rgba(0,0,0,0.65), inset 0 0 0 1px rgba(255,255,255,0.08); transition: transform var(--d-slow) var(--ease-out); }
+.video-frame video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.case:hover .video-frame { transform: translateY(-3%) rotate(1.5deg); }
+.case__media--aic .video-toggle { left: auto; right: var(--s-4); }
+@media (max-width: 59.99rem) { .page-hero__bg { display: none; } }

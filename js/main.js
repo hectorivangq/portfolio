@@ -68,6 +68,7 @@
     el.style.fontSize = '';
     const box = el.parentElement.clientWidth;
     const w = el.scrollWidth;
+    if (el.dataset.fit === 'max' && w <= box) return;
     if (w && box) el.style.fontSize = (parseFloat(getComputedStyle(el).fontSize) * box / w * 0.995) + 'px';
   });
   fit(); addEventListener('resize', fit); d.fonts?.ready.then(fit);
@@ -129,7 +130,7 @@
     const backChars = split(back, 'chars');
     const frontChars = front ? split(front, 'chars') : [];
     const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, onStart: reveal });
-    tl.fromTo([backChars, frontChars], { yPercent: 105 }, { yPercent: 0, duration: 1.25, stagger: { each: 0.055, from: 'center' } }, 0.05)
+    tl.fromTo([backChars, frontChars], { yPercent: 105 }, { yPercent: 0, duration: 1.25, stagger: { each: 0.055, from: 'center' }, onComplete: () => [back, front].forEach((n) => n && n.classList.add('is-split-done')) }, 0.05)
       .fromTo(fig, { yPercent: 4, scale: 1.06 }, { yPercent: 0, scale: 1, duration: 1.6, ease: 'expo.out' }, 0)
       .fromTo(hero.querySelectorAll('[data-hero-in]'), { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1, stagger: 0.08 }, 0.55);
 
@@ -162,12 +163,12 @@
     const title = ph.querySelector('.page-hero__title');
     const words = title ? split(title, 'words') : [];
     const tl = gsap.timeline({ onStart: reveal });
-    tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.06 }, 0.05)
+    tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.06, onComplete: () => title.classList.add('is-split-done') }, 0.05)
       .fromTo(ph.querySelectorAll('[data-hero-in]'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08, duration: 1 }, 0.45);
     const bg = ph.querySelector('.page-hero__bg');
     if (bg) {
-      tl.fromTo(bg, { xPercent: 12, autoAlpha: 0 }, { xPercent: 0, autoAlpha: 1, duration: 1.8 }, 0);
-      gsap.to(bg, { xPercent: -14, ease: 'none', scrollTrigger: { trigger: ph, start: 'top top', end: 'bottom top', scrub: true } });
+      tl.fromTo(bg, { yPercent: 18, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0);
+      gsap.to(bg, { yPercent: -12, ease: 'none', scrollTrigger: { trigger: ph, start: 'top top', end: 'bottom top', scrub: true } });
     }
   });
 
@@ -210,7 +211,7 @@
   /* ---------- Section headings: masked word rise ---------- */
   d.querySelectorAll('[data-split]').forEach((el) => {
     const words = split(el, 'words');
-    gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.15, stagger: 0.045, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+    gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.15, stagger: 0.045, onComplete: () => el.classList.add('is-split-done'), scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
   });
 
   /* ---------- Generic reveals (with optional stagger groups) ---------- */
@@ -256,31 +257,46 @@
     });
   });
 
-  /* ---------- Services list: cursor-following preview with clip swap ---------- */
+  /* ---------- Services list: preview that follows a deliberate pointer ----------
+     It only appears when the pointer actually moves over a row (not when rows
+     scroll under a still cursor), sits beside the cursor instead of on it, and
+     disappears the moment the page scrolls. */
   const preview = d.querySelector('.svc-preview');
   if (preview && fine) {
     const imgs = [...preview.querySelectorAll('img')];
-    const px = gsap.quickTo(preview, 'x', { duration: 0.55, ease: 'power3.out' });
-    const py = gsap.quickTo(preview, 'y', { duration: 0.55, ease: 'power3.out' });
-    let current = -1;
+    gsap.set(preview, { xPercent: 0, yPercent: -50, autoAlpha: 0, scale: 0.9 });
+    const px = gsap.quickTo(preview, 'x', { duration: 0.5, ease: 'power3.out' });
+    const py = gsap.quickTo(preview, 'y', { duration: 0.5, ease: 'power3.out' });
+    let current = -1, shown = false, scrolling = false, scrollTimer = 0;
+    const hide = () => { if (!shown) return; shown = false; gsap.to(preview, { autoAlpha: 0, scale: 0.9, duration: 0.25, ease: 'power2.out', overwrite: 'auto' }); };
+    const place = (e) => {
+      const w = preview.offsetWidth;
+      const x = e.clientX + 32 + w > innerWidth - 16 ? e.clientX - 32 - w : e.clientX + 32;
+      px(x); py(e.clientY);
+    };
+    const onScroll = () => { scrolling = true; hide(); clearTimeout(scrollTimer); scrollTimer = setTimeout(() => { scrolling = false; }, 250); };
+    addEventListener('scroll', onScroll, { passive: true });
+    window.__lenis?.on('scroll', onScroll);
     d.querySelectorAll('.svc').forEach((row, i) => {
-      row.addEventListener('pointerenter', (e) => {
-        gsap.set(preview, { x: e.clientX, y: e.clientY });
-        gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'expo.out' });
+      row.addEventListener('pointermove', (e) => {
+        if (scrolling || (e.movementX === 0 && e.movementY === 0)) return;
+        if (!shown) {
+          shown = true;
+          const w = preview.offsetWidth;
+          gsap.set(preview, { x: e.clientX + 32 + w > innerWidth - 16 ? e.clientX - 32 - w : e.clientX + 32, y: e.clientY });
+          gsap.to(preview, { autoAlpha: 1, scale: 1, duration: 0.45, ease: 'expo.out', overwrite: 'auto' });
+        }
         if (current !== i) {
           imgs.forEach((im, j) => {
-            if (j === i) { gsap.fromTo(im, { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.15 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 0.7, ease: 'expo.out', zIndex: 2 }); }
+            if (j === i) gsap.fromTo(im, { clipPath: 'inset(100% 0% 0% 0%)', scale: 1.15 }, { clipPath: 'inset(0% 0% 0% 0%)', scale: 1, duration: 0.6, ease: 'expo.out', zIndex: 2 });
             else gsap.set(im, { zIndex: 1 });
           });
           current = i;
         }
+        place(e);
       });
-      row.addEventListener('pointermove', (e) => { px(e.clientX); py(e.clientY); });
-      row.addEventListener('pointerleave', () => gsap.to(preview, { autoAlpha: 0, scale: 0.85, duration: 0.4, ease: 'power3.out' }));
+      row.addEventListener('pointerleave', hide);
     });
-    // Rest position so first entry doesn't jump from the corner
-    gsap.set(preview, { xPercent: -50, yPercent: -50, x: innerWidth / 2, y: innerHeight / 2 });
-    preview.style.transform = '';
   }
 
   /* Cursor label on work media ("View site", "Watch") */
@@ -329,12 +345,12 @@
   /* ---------- CTA + footer name: scrubbed rise ---------- */
   d.querySelectorAll('.cta__title').forEach((t) => {
     const words = split(t, 'words');
-    gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, stagger: 0.06, duration: 1.2, scrollTrigger: { trigger: t, start: 'top 85%', once: true } });
+    gsap.fromTo(words, { yPercent: 110 }, { yPercent: 0, stagger: 0.09, duration: 1.2, onComplete: () => t.classList.add('is-split-done'), scrollTrigger: { trigger: t, start: 'top 85%', once: true } });
   });
   const big = d.querySelector('.footer__big');
   if (big) {
     const chars = split(big, 'chars');
-    gsap.fromTo(chars, { yPercent: 100 }, { yPercent: 0, ease: 'none', stagger: 0.03, scrollTrigger: { trigger: big, start: 'top bottom', end: 'bottom 95%', scrub: true } });
+    gsap.fromTo(chars, { yPercent: 100 }, { yPercent: 0, ease: 'none', stagger: 0.03, scrollTrigger: { trigger: big, start: 'top bottom', end: 'bottom 95%', scrub: true, onLeave: () => big.classList.add('is-split-done'), onEnterBack: () => big.classList.remove('is-split-done') } });
   }
 
   /* ---------- Magnetic buttons ---------- */
