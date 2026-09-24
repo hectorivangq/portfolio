@@ -255,6 +255,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .svc__price .arrow { transition: transform var(--d-base) var(--ease-out); }
 .svc__thumb { grid-column: 2; margin-top: var(--s-3); border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 16 / 10; background: var(--paper-2); }
 .svc__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.svc__thumb--strip { aspect-ratio: 1800 / 734; background: var(--ink); }
+.svc__thumb--strip img { object-fit: contain; }
 .svc::before { content: ""; position: absolute; inset: 0; background: var(--ink); transform: scaleY(0); transform-origin: bottom; transition: transform var(--d-slow) var(--ease-out); z-index: 0; }
 @media (hover: hover) and (min-width: 60rem) {
   .svc a { grid-template-columns: 4rem 1fr 22rem; padding-block: var(--s-6); }
@@ -269,6 +271,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .svc-preview { position: fixed; left: 0; top: 0; z-index: 30; width: 17rem; aspect-ratio: 4 / 3; pointer-events: none; border-radius: var(--radius-card); overflow: hidden; visibility: hidden; box-shadow: 0 24px 48px -18px rgba(0,0,0,0.45); display: none; }
 .svc-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; clip-path: inset(100% 0 0 0); }
 .svc-preview img.is-on { clip-path: inset(0 0 0 0); }
+.svc-preview img.is-strip { object-fit: contain; background: var(--ink); }
 @media (hover: hover) and (min-width: 60rem) { .svc-preview { display: block; } }
 
 /* ---------- Work (horizontal on desktop) ---------- */
@@ -296,8 +299,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .work.is-horizontal .work__track { display: flex; align-items: center; gap: var(--s-8); width: max-content; padding-right: 20vw; }
   .work.is-horizontal .work__intro { width: min(34vw, 30rem); flex: none; }
   .work.is-horizontal .work__intro .h-section { font-size: clamp(3rem, 5vw, 5rem); }
-  .work.is-horizontal .case { width: min(50vw, 44rem); flex: none; }
-  .work.is-horizontal .case__media { aspect-ratio: 16 / 10; max-height: calc(100vh - var(--header-h) - 18rem); width: 100%; }
+  .work.is-horizontal .case { width: min(50vw, 44rem, calc((100vh - var(--header-h) - 18rem) * 1.6)); flex: none; }
+  .work.is-horizontal .case__media { aspect-ratio: 16 / 10; width: 100%; }
+  .work.is-horizontal .case__media--site { --pw: 22%; }
 }
 
 /* Browser frame with scrolling screenshot */
@@ -310,15 +314,20 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .case:hover .browser__view img, .case:focus-within .browser__view img { transform: translateY(calc(-100% + var(--view-h, 20rem))); }
 /* Phone mockup: fixed bezel around a screen at the iPhone's exact 390:844 ratio.
    The screenshot is 1170x2532 (the same ratio), so it fills the screen edge to edge. */
-.phone { position: relative; display: flex; padding: 6px; border-radius: 30px; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), inset 0 0 0 3px #050505, 0 22px 44px -18px rgba(0,0,0,0.6); }
+.phone { position: relative; display: block; padding: 6px; border-radius: 30px; background: linear-gradient(150deg, #3C3C3F 0%, #161616 38%, #0B0B0B 62%, #2A2A2C 100%); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.16), inset 0 0 0 3px #050505, 0 22px 44px -18px rgba(0,0,0,0.6); }
 .phone__screen { position: relative; height: 100%; width: auto; aspect-ratio: 390 / 844; border-radius: 24px; overflow: hidden; background: #000; }
 .phone__screen::after { content: ""; position: absolute; top: 1.6%; left: 50%; width: 30%; height: 3.3%; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
 .phone__screen img, .phone__screen video { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-/* Website case: browser and phone side by side, both fully inside the card, no overlap */
-.site-shot { position: absolute; inset: 0; display: flex; align-items: stretch; gap: 4%; padding: 5% 5% 5% 5%; background: radial-gradient(circle at 80% 60%, #26262A, var(--ink-2) 70%); }
-.site-shot .browser { position: relative; inset: auto; flex: 1 1 auto; min-width: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 22px 44px -20px rgba(0,0,0,0.6); }
-.phone--side { flex: none; height: 100%; transition: transform var(--d-slow) var(--ease-out); }
-.case:hover .phone--side { transform: translateY(-2%); }
+/* Website case: browser and phone side by side, both fully inside the card, no overlap.
+   Everything is sized from the card's WIDTH (the one dimension every browser resolves the
+   same way). --pw is the phone's width as a share of the card; it is chosen per card shape
+   so the phone's height always fits: 4:3 cards take 27%, 16:10 cards take 22%. */
+.case__media--site { --pw: 27%; }
+.site-shot { position: absolute; inset: 0; background: radial-gradient(circle at 80% 60%, #26262A, var(--ink-2) 70%); }
+.site-shot .browser { position: absolute; left: 5%; top: 6.5%; bottom: 6.5%; right: calc(5% + var(--pw) + 4%); border-radius: 6px; overflow: hidden; box-shadow: 0 22px 44px -20px rgba(0,0,0,0.6); }
+.phone--side { position: absolute; right: 5%; top: 50%; width: var(--pw); transform: translateY(-50%); transition: transform var(--d-slow) var(--ease-out); }
+.case:hover .phone--side { transform: translateY(-52%); }
+.phone--side .phone__screen { width: 100%; height: auto; }
 @media (max-width: 47.99rem) { .phone { padding: 4px; border-radius: 18px; } .phone__screen { border-radius: 14px; } }
 
 /* Fanned stack (thumbnails, magazine covers) */
