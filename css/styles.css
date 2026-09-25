@@ -460,7 +460,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* ---------- Footer ---------- */
 .site-footer { background: var(--paper); color: var(--text); padding-top: var(--s-8); overflow: hidden; }
 .footer__grid { display: grid; gap: var(--s-6); padding-bottom: var(--s-7); }
-@media (min-width: 60rem) { .footer__grid { grid-template-columns: 1.4fr 1fr 1fr; } }
+@media (min-width: 60rem) { .footer__grid { grid-template-columns: 1.4fr 1fr 1fr 0.8fr; } }
 .footer__col h2 { font-size: var(--t-caption); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--s-4); }
 .footer__col ul { display: grid; gap: var(--s-2); }
 .footer__col a { text-decoration: none; min-height: 2rem; display: inline-flex; align-items: center; }
