@@ -323,6 +323,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .phone__status { display: flex; align-items: center; justify-content: space-between; aspect-ratio: 390 / 47; padding: 0 7.2cqw 0 10.5cqw; font: 600 4.3cqw/1 -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; letter-spacing: -0.01em; }
 .phone__screen--light .phone__status { background: #FFFFFF; color: #000; }
 .phone__screen--dark .phone__status { background: #0B0B0D; color: #FFF; }
+.phone__screen--cream .phone__status { background: #F6F1E6; color: #000; }
 .phone__icons { width: 17.5cqw; height: auto; fill: currentColor; color: inherit; }
 .phone__island { position: absolute; top: 2.82cqw; left: 50%; width: 32.3cqw; aspect-ratio: 126 / 37; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
 .phone__view { aspect-ratio: 390 / 797; overflow: hidden; }
@@ -492,7 +493,11 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 
 /* ---------- Case grids (service pages) ---------- */
 .cases-grid { display: grid; gap: var(--s-8); }
-@media (min-width: 60rem) { .cases-grid { grid-template-columns: repeat(2, 1fr); gap: var(--s-7); } .cases-grid--one { grid-template-columns: 1fr; } .cases-grid--one .case__media { aspect-ratio: 16 / 8; } }
+@media (min-width: 60rem) { .cases-grid { grid-template-columns: repeat(2, 1fr); gap: var(--s-7); } .cases-grid--one { grid-template-columns: 1fr; } .cases-grid--one .case__media { aspect-ratio: 16 / 8; }
+  /* An odd last case spans the row, with a slimmer phone so it fits the wider frame */
+  .cases-grid > .case:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .cases-grid > .case:last-child:nth-child(odd) .case__media { aspect-ratio: 16 / 8; }
+  .cases-grid > .case:last-child:nth-child(odd) .case__media--site { --pw: 15%; } }
 .case .link-arrow { color: var(--paper); }
 .site-header :focus-visible { outline-color: var(--brick-ink); }
 /* Fade the bottom of the portrait into the ground so the crop never reads as a hard edge */
