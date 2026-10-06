@@ -155,8 +155,12 @@
 .b-cafe .h em { font-size: 1.08em; color: var(--tom); }
 .ring { position: absolute; z-index: 1; width: 48cqw; height: auto; color: #7A4A2A; opacity: 0.28; }
 .cafe-1, .cafe-3, .cafe-5 { --fg: var(--cream); }
-.cafe-1 .h em, .cafe-3 .h em { color: var(--tom-l); }
+.cafe-1 .h em { color: var(--tom-l); }
+.cafe-3 .h em { color: var(--cream); }
+.cafe-5 { --fg: var(--cream); }
 .cafe-5 .h em { color: var(--cream); }
+.cafe-5 .h { text-shadow: 0 0.4cqw 2.6cqw rgba(0,0,0,0.35); }
+.cafe-5.sh-tb::before { background: linear-gradient(to bottom, rgba(20,10,5,0.78), rgba(20,10,5,0.4) 40%, transparent 58%, rgba(0,0,0,0.62)); }
 .cafe-1 .h { margin-top: 5cqw; font-size: 13.5cqw; }
 .cafe-2 { --bg: var(--cream); --fg: var(--esp); }
 .cafe-2 .h { margin-top: 15cqw; font-size: 17cqw; }
@@ -188,7 +192,10 @@
 .b-arc .pb { font-size: 2.9cqw; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.2; }
 .lanes { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; }
 .arc-1 { --fg: var(--ink); }
-.arc-1 .h { margin-block: auto; font-size: 11.5cqw; line-height: 0.92; max-width: 46%; }
+.arc-1 .h { margin-top: 7cqw; font-size: 11cqw; line-height: 0.92; }
+html[lang="es"] .arc-1 .h { font-size: 9.6cqw; }
+.arc-1 .pb { margin-top: auto; }
+.arc-1 .pt > span:last-child { background: rgba(255,255,255,0.82); padding: 0.8cqw 1.6cqw; }
 .arc-2 { --bg: var(--ink); --fg: #fff; }
 .arc-2 .lanes { color: rgba(255,255,255,0.3); }
 .arc-2 .h { margin-top: 6cqw; font-size: 10.6cqw; position: relative; z-index: 2; }
@@ -228,12 +235,13 @@
 .bib__num { font-family: var(--f-wide); font-weight: 900; font-size: 22cqw; line-height: 0.95; letter-spacing: -0.03em; }
 .bib__bar { margin-top: 1.4cqw; padding-top: 2cqw; border-top: 0.4cqw dashed rgba(0,0,0,0.4); display: flex; justify-content: space-between; font-size: 2.6cqw; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
 .bib__bar span:last-child { color: var(--safety); }
-.run-3 .h { margin-top: 7cqw; font-size: 16cqw; }
+.run-3 .h { margin-top: 7cqw; font-size: 16cqw; text-shadow: 0 0.4cqw 2.4cqw rgba(0,0,0,0.35); }
+.run-3.sh-t::before { background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.25) 45%, transparent 60%); }
 .run-4 .route { position: absolute; z-index: 1; left: 8%; right: 8%; top: 15%; width: 84%; height: auto; }
 .run-4 .h { margin-top: auto; font-size: 7.8cqw; line-height: 1.05; }
 .run-4 .pb { margin-top: 4cqw; }
 .run-5 .h { margin-block: auto; font-size: 14.5cqw; transform: rotate(-5deg); line-height: 0.95; }
-.run-6 .sheet { position: absolute; z-index: 2; left: 10cqw; right: 10cqw; top: 12cqw; bottom: 12cqw; background: var(--chalk); color: var(--black); padding: 9cqw 7cqw 6cqw; transform: rotate(-2deg); box-shadow: 0 2cqw 4cqw -2cqw rgba(0,0,0,0.6); }
+.run-6 .sheet { position: absolute; z-index: 2; left: 10cqw; right: 10cqw; top: 50%; translate: 0 -50%; background: var(--chalk); color: var(--black); padding: 9cqw 7cqw 6cqw; transform: rotate(-2deg); box-shadow: 0 2cqw 4cqw -2cqw rgba(0,0,0,0.6); }
 .run-6 .sheet::before, .run-6 .sheet::after { content: ""; position: absolute; top: -2.5cqw; width: 20cqw; height: 6cqw; background: rgba(255,107,44,0.85); }
 .run-6 .sheet::before { left: -4cqw; transform: rotate(-12deg); }
 .run-6 .sheet::after { right: -4cqw; transform: rotate(10deg); }
@@ -323,7 +331,7 @@
 .coach-5 .part { margin-block: 5cqw auto; text-align: center; font-size: 3.4cqw; font-weight: 700; letter-spacing: 0.4em; color: #fff; }
 .coach-5 .pb { color: #fff; }
 .coach-6 { --bg: var(--char); --fg: var(--warm); }
-.receipt { position: absolute; z-index: 2; left: 17cqw; right: 17cqw; top: 13cqw; bottom: 15cqw; background: #FBFAF6; color: var(--char); padding: 6cqw 6cqw 8cqw; font-size: 3.3cqw; line-height: 1.6; font-family: "Courier New", Courier, monospace; -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - 2cqw) no-repeat, conic-gradient(from -45deg at bottom, transparent, #000 1deg 89deg, transparent 90deg) bottom / 4cqw 2cqw repeat-x; mask: linear-gradient(#000, #000) top / 100% calc(100% - 2cqw) no-repeat, conic-gradient(from -45deg at bottom, transparent, #000 1deg 89deg, transparent 90deg) bottom / 4cqw 2cqw repeat-x; }
+.receipt { position: absolute; z-index: 2; left: 17cqw; right: 17cqw; top: 50%; translate: 0 -50%; background: #FBFAF6; color: var(--char); padding: 6cqw 6cqw 8cqw; font-size: 3.3cqw; line-height: 1.6; font-family: "Courier New", Courier, monospace; -webkit-mask: linear-gradient(#000, #000) top / 100% calc(100% - 2cqw) no-repeat, conic-gradient(from -45deg at bottom, transparent, #000 1deg 89deg, transparent 90deg) bottom / 4cqw 2cqw repeat-x; mask: linear-gradient(#000, #000) top / 100% calc(100% - 2cqw) no-repeat, conic-gradient(from -45deg at bottom, transparent, #000 1deg 89deg, transparent 90deg) bottom / 4cqw 2cqw repeat-x; }
 .receipt__h { text-align: center; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 3cqw; }
 .receipt li { display: flex; justify-content: space-between; gap: 2cqw; }
 .receipt .ok { color: #3E6B3A; font-weight: 700; }
@@ -351,6 +359,7 @@
 .book-2, .book-4 { --fg: var(--yel); }
 .book-2 .h, .book-4 .h { margin-top: auto; font-size: 13cqw; }
 .book-2 .pb, .book-4 .pb { margin-top: 4cqw; color: #fff; }
+.book-2.sh-tb::before { background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent 30%, transparent 55%, rgba(0,0,0,0.65)); }
 .page { position: absolute; z-index: 1; left: 10cqw; right: 10cqw; top: 14cqw; bottom: 16cqw; background: #FFFDF6; color: #2A2A2A; padding: 8cqw 7cqw; box-shadow: 0 2cqw 4cqw -2cqw rgba(0,0,0,0.4); transform: rotate(-1.5deg); display: flex; flex-direction: column; gap: 3cqw; }
 .page__lines { display: grid; gap: 2.6cqw; }
 .page__lines i { display: block; height: 1.3cqw; border-radius: 1cqw; background: #D9D6CE; }
