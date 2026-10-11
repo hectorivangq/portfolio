@@ -324,6 +324,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .phone__screen--light .phone__status { background: #FFFFFF; color: #000; }
 .phone__screen--dark .phone__status { background: #0B0B0D; color: #FFF; }
 .phone__screen--cream .phone__status { background: #F6F1E6; color: #000; }
+.phone__screen--red .phone__status { background: #A6192E; color: #FFF; }
+.phone__screen--midnight .phone__status { background: #0B1222; color: #FFF; }
+.phone__screen--navy .phone__status { background: #0D2240; color: #FFF; }
 .phone__icons { width: 17.5cqw; height: auto; fill: currentColor; color: inherit; }
 .phone__island { position: absolute; top: 2.82cqw; left: 50%; width: 32.3cqw; aspect-ratio: 126 / 37; transform: translateX(-50%); border-radius: 999px; background: #000; z-index: 2; }
 .phone__view { aspect-ratio: 390 / 797; overflow: hidden; }
@@ -535,7 +538,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .results__insight { margin-top: var(--s-7); max-width: 62ch; font-family: var(--f-serif); font-style: italic; font-size: var(--t-quote); line-height: 1.25; }
 .reels { list-style: none; margin: var(--s-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s-4); }
 .reel { position: relative; }
-.reel figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--ink); aspect-ratio: 396 / 595; height: 100%; }
+.reel figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--ink); aspect-ratio: 9 / 16; height: 100%; }
 .reel--top { grid-column: span 2; grid-row: span 2; }
 .reel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease-out); }
 .reel figcaption { position: absolute; inset: auto 0 0 0; display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-6) var(--s-3) var(--s-3); color: var(--white); background: linear-gradient(to top, rgba(18, 18, 18, 0.88), rgba(18, 18, 18, 0)); }
