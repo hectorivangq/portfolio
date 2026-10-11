@@ -526,3 +526,29 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .legal ul { padding-left: 1.2em; list-style: disc; }
 .legal li + li { margin-top: var(--s-2); }
 .footer__legal a { color: inherit; text-underline-offset: 3px; }
+
+/* ---------- Results: real numbers (AIC reels) ---------- */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6); margin: var(--s-8) 0 0; padding-top: var(--s-6); border-top: 1px solid var(--rule); }
+.stat { display: flex; flex-direction: column-reverse; justify-content: flex-end; gap: var(--s-3); }
+.stat dt { color: var(--muted); font-size: var(--t-small); max-width: 26ch; }
+.stat__num { margin: 0; font-family: var(--f-display); font-size: clamp(3.25rem, 7.5vw, 6.5rem); line-height: 0.9; letter-spacing: var(--track-display); font-variant-numeric: tabular-nums; }
+.results__insight { margin-top: var(--s-7); max-width: 62ch; font-family: var(--f-serif); font-style: italic; font-size: var(--t-quote); line-height: 1.25; }
+.reels { list-style: none; margin: var(--s-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
+.reel { position: relative; }
+.reel figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--ink); aspect-ratio: 396 / 595; height: 100%; }
+.reel--top { grid-column: span 2; grid-row: span 2; }
+.reel img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease-out); }
+.reel figcaption { position: absolute; inset: auto 0 0 0; display: flex; flex-direction: column; gap: var(--s-1); padding: var(--s-6) var(--s-3) var(--s-3); color: var(--white); background: linear-gradient(to top, rgba(18, 18, 18, 0.88), rgba(18, 18, 18, 0)); }
+.reel__name { font-size: var(--t-caption); line-height: 1.3; opacity: 0.86; }
+.reel__views { display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--f-display); font-size: 1.5rem; line-height: 1; }
+.reel--top .reel__views { font-size: clamp(2rem, 4vw, 3.25rem); }
+.reel__eye { width: 1.1em; height: 0.8em; flex: none; }
+@media (hover: hover) { .reel:hover img { transform: scale(1.05); } }
+.results__source { margin-top: var(--s-5); font-size: var(--t-small); }
+@media (max-width: 40rem) {
+  .stats { grid-template-columns: 1fr; gap: var(--s-5); }
+  .reels { grid-template-columns: repeat(2, 1fr); gap: var(--s-3); }
+  .reel--top { grid-column: span 2; grid-row: auto; }
+  .reel--top figure { aspect-ratio: 4 / 5; }
+  .reel__views { font-size: 1.25rem; }
+}

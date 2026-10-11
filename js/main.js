@@ -223,6 +223,24 @@
     gsap.fromTo(group.children, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 1.1, stagger: 0.09, scrollTrigger: { trigger: group, start: 'top 88%', once: true } });
   });
 
+  /* Real numbers: count up from zero when the stat row enters */
+  d.querySelectorAll('[data-count]').forEach((el) => {
+    const end = parseFloat(el.dataset.count), dec = +el.dataset.dec || 0, suf = el.dataset.suffix || '';
+    const fmt = (v) => v.toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }) + suf;
+    const o = { v: 0 };
+    el.textContent = fmt(0);
+    gsap.to(o, { v: end, duration: 2.2, ease: 'power3.out', onUpdate: () => { el.textContent = fmt(o.v); }, onComplete: () => { el.textContent = fmt(end); }, scrollTrigger: { trigger: el, start: 'top 88%', once: true } });
+  });
+
+  /* Reels: each tile opens from a slit and settles, the top reel first */
+  d.querySelectorAll('[data-reels]').forEach((list) => {
+    const figs = list.querySelectorAll('figure');
+    const imgs = list.querySelectorAll('img');
+    const tl = gsap.timeline({ scrollTrigger: { trigger: list, start: 'top 82%', once: true } });
+    tl.fromTo(figs, { clipPath: 'inset(48% 0% 48% 0% round 6px)', y: 40 }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', y: 0, duration: 1.3, stagger: 0.07, ease: 'expo.out' })
+      .fromTo(imgs, { scale: 1.25 }, { scale: 1, duration: 1.6, stagger: 0.07, ease: 'expo.out', clearProps: 'transform' }, 0);
+  });
+
   /* Image unmask: frame opens while the image settles */
   d.querySelectorAll('[data-unmask]').forEach((el) => {
     const inner = el.querySelector('img, video, .browser, .fan, .video-card');
