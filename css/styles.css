@@ -533,7 +533,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .stat dt { color: var(--muted); font-size: var(--t-small); max-width: 26ch; }
 .stat__num { margin: 0; font-family: var(--f-display); font-size: clamp(3.25rem, 7.5vw, 6.5rem); line-height: 0.9; letter-spacing: var(--track-display); font-variant-numeric: tabular-nums; }
 .results__insight { margin-top: var(--s-7); max-width: 62ch; font-family: var(--f-serif); font-style: italic; font-size: var(--t-quote); line-height: 1.25; }
-.reels { list-style: none; margin: var(--s-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-4); }
+.reels { list-style: none; margin: var(--s-8) 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--s-4); }
 .reel { position: relative; }
 .reel figure { margin: 0; position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--ink); aspect-ratio: 396 / 595; height: 100%; }
 .reel--top { grid-column: span 2; grid-row: span 2; }
@@ -545,6 +545,11 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .reel__eye { width: 1.1em; height: 0.8em; flex: none; }
 @media (hover: hover) { .reel:hover img { transform: scale(1.05); } }
 .results__source { margin-top: var(--s-5); font-size: var(--t-small); }
+@media (max-width: 60rem) {
+  .reels { grid-template-columns: repeat(3, 1fr); }
+  .reel--top { grid-column: span 3; grid-row: auto; }
+  .reel--top figure { aspect-ratio: 16 / 11; }
+}
 @media (max-width: 40rem) {
   .stats { grid-template-columns: 1fr; gap: var(--s-5); }
   .reels { grid-template-columns: repeat(2, 1fr); gap: var(--s-3); }
