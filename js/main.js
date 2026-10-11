@@ -60,7 +60,7 @@
   });
 
   // Browser-frame screenshots: measure the viewport so the hover scroll stops at the bottom
-  const sizeViews = () => d.querySelectorAll('.browser__view').forEach((v) => v.style.setProperty('--view-h', v.clientHeight + 'px'));
+  const sizeViews = () => d.querySelectorAll('.browser__view, .stage .im--site, .stage__item').forEach((v) => v.style.setProperty('--view-h', v.clientHeight + 'px'));
   addEventListener('resize', sizeViews); addEventListener('load', sizeViews); sizeViews();
 
   // Fit display lines to their container width (footer name)
@@ -75,6 +75,43 @@
 
   // Year
   d.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
+
+  /* Work index: the row on the centre line (or under the pointer) drives the stage.
+     Works without motion; with motion the next piece of work wipes up over the last. */
+  d.querySelectorAll('[data-index]').forEach((ix) => {
+    const rows = [...ix.querySelectorAll('.index__row')];
+    const items = [...ix.querySelectorAll('.stage__item')];
+    let cur = 0;
+    const show = (i) => {
+      if (i === cur || !desktop()) return;
+      const prev = items[cur], next = items[i];
+      rows[cur].classList.remove('is-active');
+      rows[i].classList.add('is-active');
+      cur = i;
+      next.classList.add('is-active');
+      const settle = () => items.forEach((el, j) => { if (j !== cur) el.classList.remove('is-active'); el.style.zIndex = ''; });
+      const g = window.gsap;
+      if (reduce || !g) { settle(); return; }
+      g.killTweensOf(items);
+      items.forEach((el) => { el.style.zIndex = el === next ? 2 : (el === prev ? 1 : 0); });
+      g.fromTo(next, { clipPath: 'inset(100% 0% 0% 0% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', duration: 0.95, ease: 'expo.out', onComplete: settle });
+      g.fromTo(next.firstElementChild, { scale: 1.1, yPercent: 6 }, { scale: 1, yPercent: 0, duration: 1.3, ease: 'expo.out', clearProps: 'transform' });
+      sizeViews();
+    };
+    // The row crossing the middle of the screen is the active one.
+    let ticking = false;
+    const pick = () => {
+      ticking = false;
+      const mid = innerHeight / 2;
+      rows.forEach((r, i) => { const b = r.getBoundingClientRect(); if (b.top <= mid && b.bottom > mid) show(i); });
+    };
+    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(pick); } }, { passive: true });
+    addEventListener('load', pick);
+    rows.forEach((r, i) => {
+      r.addEventListener('pointerenter', () => show(i));
+      r.addEventListener('focusin', () => show(i));
+    });
+  });
 
   /* ---------- Motion ---------- */
   const reveal = () => root.classList.add('motion-ready');

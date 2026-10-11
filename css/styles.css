@@ -560,3 +560,55 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
   .reel--top figure { aspect-ratio: 4 / 5; }
   .reel__views { font-size: 1.25rem; }
 }
+
+/* ---------- Work index (home "Real clients. Real links.") ----------
+   Names as an index with the real link on every row; on desktop a sticky stage shows the
+   active project's actual work, unframed (no device mockups). */
+.index { display: grid; gap: var(--s-7); margin-top: var(--s-7); }
+.index__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink-3); }
+.index__row { display: grid; gap: var(--s-4); padding: var(--s-6) 0; border-bottom: 1px solid var(--ink-3); }
+.index__name { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.4rem, 4.4vw, 4.5rem); line-height: 0.92; letter-spacing: var(--track-display); text-wrap: balance; transition: color var(--d-base) var(--ease-out), transform var(--d-slow) var(--ease-out); }
+.index__meta { display: grid; gap: var(--s-2); max-width: 46ch; transition: opacity var(--d-base) var(--ease-out); }
+.index__type { font-size: var(--t-small); color: var(--muted-ink); }
+.index__desc { color: color-mix(in srgb, var(--paper) 84%, transparent); }
+.index__links { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); margin-top: var(--s-2); }
+.index__url { display: inline-flex; align-items: center; gap: 0.45em; color: var(--paper); font-weight: 600; text-decoration: none; padding-bottom: 3px; background: linear-gradient(currentColor, currentColor) left bottom / 100% 1px no-repeat; transition: background-size var(--d-base) var(--ease-out), color var(--d-fast) var(--ease-out); }
+.index__url:hover, .index__url:focus-visible { color: var(--brick-ink); background-size: 0% 1px; }
+.index__url .arrow { transition: transform var(--d-base) var(--ease-out); }
+.index__url:hover .arrow { transform: translate(2px, -2px); }
+.index__media { order: 2; border-radius: var(--radius-card); overflow: hidden; background: var(--ink-2); }
+.index__meta { order: 3; }
+.index__stage { display: none; }
+
+.im--site { position: relative; overflow: hidden; height: 100%; }
+.im--site img { display: block; width: 100%; height: auto; }
+.index__media .im--site { aspect-ratio: 16 / 10; }
+.im--thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); padding: var(--s-4); align-content: center; height: 100%; }
+.im--thumbs img { width: 100%; height: auto; border-radius: 4px; display: block; }
+.im--covers { position: relative; height: 100%; min-height: 16rem; }
+.im--covers img { position: absolute; left: 50%; top: 50%; height: 74%; width: auto; border-radius: 3px; box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.85); transform: translate(-50%, -50%); }
+.im--covers img:nth-child(1) { height: 60%; transform: translate(-98%, -46%) rotate(-6deg); }
+.im--covers img:nth-child(3) { height: 60%; transform: translate(-2%, -46%) rotate(6deg); }
+.im--covers img:nth-child(2) { z-index: 1; }
+
+@media (min-width: 60rem) {
+  .index { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: var(--s-8); align-items: start; }
+  .index__media { display: none; }
+  .index__row { padding: var(--s-6) 0 var(--s-6); cursor: default; }
+  .index__name { color: #55554F; }
+  .index__row .index__meta { opacity: 0.5; }
+  .stage .im--covers img { height: min(64%, 34vw); }
+  .stage .im--covers img:nth-child(1), .stage .im--covers img:nth-child(3) { height: min(52%, 27vw); }
+  .stage .im--thumbs { grid-template-columns: 1fr; align-content: start; height: auto; padding: var(--s-5); gap: var(--s-4); }
+  .stage__item.is-active .im--thumbs { animation: index-scroll 12s var(--ease-io) 1.2s infinite alternate; }
+  .index__row.is-active .index__name { color: var(--paper); transform: translateX(0.35rem); }
+  .index__row.is-active .index__meta { opacity: 1; }
+  .index__stage { display: block; position: sticky; top: calc(var(--header-h) + var(--s-6)); height: calc(100vh - var(--header-h) - var(--s-8)); max-height: 46rem; }
+  .stage { position: relative; height: 100%; border-radius: var(--radius-card); overflow: hidden; background: var(--ink-2); }
+  .stage__item { position: absolute; inset: 0; visibility: hidden; }
+  .stage__item.is-active { visibility: visible; }
+  .stage .im--site img { transform: translateY(0); }
+  .stage__item.is-active .im--site img { animation: index-scroll 16s var(--ease-io) 1.2s infinite alternate; }
+}
+@keyframes index-scroll { to { transform: translateY(calc(-100% + var(--view-h, 40rem))); } }
+@media (prefers-reduced-motion: reduce) { .stage__item.is-active .im--site img, .stage__item.is-active .im--thumbs { animation: none; } }
