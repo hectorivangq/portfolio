@@ -1,0 +1,90 @@
+/* ==========================================================================
+   /mockup and /es/diseno-gratis only. Loaded after styles.css and reads its
+   tokens; nothing here changes another page.
+   ========================================================================== */
+
+/* ---------- Hero: copy left, a real homepage I built on the right ---------- */
+.mk-hero { padding-top: calc(var(--header-h) + var(--s-7)); }
+.mk-hero .page-hero__title { font-size: clamp(2.75rem, 11vw, 5.25rem); max-width: 16ch; margin-top: var(--s-5); }
+@media (min-width: 60rem) { .mk-hero .page-hero__title { font-size: clamp(3.5rem, 5.4vw, 5.75rem); } }
+.mk-hero__grid { display: grid; gap: var(--s-7); }
+.mk-hero__lede { margin-top: var(--s-6); color: color-mix(in srgb, var(--paper) 86%, transparent); max-width: 46ch; }
+.mk-hero__btns { margin-top: var(--s-6); }
+.mk-hero__note { margin-top: var(--s-4); font-size: var(--t-small); color: var(--muted-ink); }
+.btn:hover .arrow--down { transform: translateY(3px); }
+
+.mk-shot { display: none; }
+@media (min-width: 60rem) {
+  .mk-hero__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: var(--s-8); align-items: end; }
+  .mk-shot { display: grid; gap: var(--s-3); position: relative; z-index: 1; }
+}
+.mk-shot__frame { position: relative; aspect-ratio: 4 / 5; max-height: calc(100svh - var(--header-h) - var(--s-9)); border-radius: var(--radius-card); overflow: hidden; background: var(--ink-2); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--ink-3); }
+.mk-shot__frame img { width: 100%; height: auto; }
+.mk-shot.is-scrolling .mk-shot__frame img { animation: mk-scroll 18s var(--ease-io) infinite alternate; }
+@keyframes mk-scroll { to { transform: translateY(calc(-100% + var(--view-h, 30rem))); } }
+.mk-shot__cap { font-size: var(--t-caption); color: var(--muted-ink); }
+.mk-shot__cap a { color: var(--paper); font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.35em; border-bottom: 1px solid currentColor; }
+.mk-shot__cap a:hover { color: var(--brick-ink); }
+/* Opens from a slit once main.js has motion on; mockup.js runs the reveal. */
+html.motion:not(.motion-ready) .mk-shot__frame { clip-path: inset(46% 0 46% 0 round 6px); }
+
+/* ---------- Request: what it is / isn't, then the form ---------- */
+/* Phones: heading, form, then the lists. Desktop: heading and lists left, form right. */
+.mk-request { display: grid; gap: var(--s-7); }
+.mk-request .section-head { margin-bottom: 0; }
+@media (min-width: 60rem) {
+  .mk-request { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); grid-template-rows: auto 1fr; column-gap: var(--s-8); row-gap: var(--s-6); align-items: start; }
+  .mk-request__head { grid-column: 1; grid-row: 1; }
+  .mk-lists { grid-column: 1; grid-row: 2; }
+  .mk-card { grid-column: 2; grid-row: 1 / span 2; }
+}
+.mk-lists { display: grid; gap: var(--s-6); }
+.mk-lists__title { font-size: var(--t-caption); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: var(--s-3); }
+.mk-list { display: grid; gap: var(--s-3); border-top: var(--hair); padding-top: var(--s-4); }
+.mk-list li { display: grid; grid-template-columns: 1.1rem 1fr; gap: var(--s-3); font-size: var(--t-small); line-height: 1.45; }
+.mk-list svg { margin-top: 0.25em; color: var(--brick); }
+.mk-list--not svg { color: var(--muted); }
+
+.mk-card { background: var(--paper); border: var(--hair); border-radius: var(--radius-card); padding: clamp(var(--s-5), 4vw, var(--s-7)); }
+.mk-required { font-size: var(--t-caption); color: var(--muted); margin-bottom: var(--s-5); }
+.mk-fields { display: grid; gap: var(--s-5); }
+@media (min-width: 48rem) { .mk-fields { grid-template-columns: 1fr 1fr; gap: var(--s-5) var(--s-4); } }
+.mk-field { min-width: 0; margin: 0; padding: 0; border: 0; }
+.mk-field--full { grid-column: 1 / -1; }
+.mk-field > label, .mk-field legend { display: block; padding: 0; margin-bottom: var(--s-2); font-size: var(--t-small); font-weight: 600; line-height: 1.35; }
+.mk-opt { font-weight: 400; color: var(--muted); }
+.mk-hint { font-size: var(--t-caption); color: var(--muted); margin-top: var(--s-2); }
+.mk-field legend + .mk-hint { margin: calc(-1 * var(--s-1)) 0 var(--s-3); }
+.mk-input { width: 100%; min-height: 3.25rem; padding: 0 var(--s-4); border: 1px solid var(--muted); border-radius: var(--radius); background: var(--white); color: var(--text); font: inherit; font-size: var(--t-body); transition: border-color var(--d-fast) var(--ease-out); }
+.mk-input:hover { border-color: var(--text); }
+.mk-input:focus-visible { outline: 2px solid var(--brick); outline-offset: 1px; border-color: var(--text); }
+.mk-input[aria-invalid="true"] { border-color: var(--brick); border-width: 2px; }
+
+.mk-choices { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.mk-choice { position: relative; display: inline-flex; }
+.mk-choice input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.mk-choice span { display: inline-flex; align-items: center; min-height: 2.75rem; padding: 0 var(--s-4); border: 1px solid var(--muted); border-radius: var(--radius); background: var(--white); font-size: var(--t-small); font-weight: 500; transition: background var(--d-fast) var(--ease-out), color var(--d-fast) var(--ease-out), border-color var(--d-fast) var(--ease-out); }
+.mk-choice:hover span { border-color: var(--text); }
+.mk-choice input:checked + span { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.mk-choice input:focus-visible + span { outline: 2px solid var(--brick); outline-offset: 2px; }
+.mk-field[data-invalid] .mk-choice span { border-color: var(--brick); }
+
+.mk-error { margin-top: var(--s-2); font-size: var(--t-caption); font-weight: 600; color: var(--brick); }
+.mk-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.mk-submit { display: grid; gap: var(--s-4); margin-top: var(--s-6); padding-top: var(--s-5); border-top: var(--hair); }
+.mk-submit .btn { width: 100%; }
+@media (min-width: 48rem) { .mk-submit .btn { width: auto; justify-self: start; } }
+.mk-submit .btn[aria-busy="true"] { opacity: 0.7; pointer-events: none; }
+.mk-fail { padding: var(--s-3) var(--s-4); border-left: 2px solid var(--brick); background: var(--paper-2); font-size: var(--t-small); }
+.mk-consent { font-size: var(--t-caption); color: var(--muted); max-width: 60ch; }
+.mk-consent a, .mk-fail a { color: var(--text); text-underline-offset: 3px; }
+
+/* After it sends */
+.mk-done { display: grid; gap: var(--s-5); justify-items: start; }
+.mk-done[hidden] { display: none; }
+.mk-done__title { font-family: var(--f-display); font-weight: 400; font-size: var(--t-title); line-height: var(--lh-title); outline: none; }
+.mk-done__steps { display: grid; gap: var(--s-3); width: 100%; border-top: var(--hair); padding-top: var(--s-4); }
+.mk-done__steps li { display: grid; grid-template-columns: 2rem 1fr; gap: var(--s-3); align-items: baseline; }
+.mk-done__n { font-family: var(--f-display); font-size: 1.5rem; line-height: 1; color: var(--brick); }
+
+@media (prefers-reduced-motion: reduce) { .mk-shot.is-scrolling .mk-shot__frame img { animation: none; } }
