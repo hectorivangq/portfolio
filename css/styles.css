@@ -1,13 +1,13 @@
 /* ==========================================================================
    Hector Garcia Quiros · site styles
    Tokens come from the Brand System (ink / paper / one brick accent, Anton +
-   Instrument Serif + Instrument Sans). Every value below the token block
+   Instrument Serif + Archivo; Archivo replaced Instrument Sans 2026-10-11). Every value below the token block
    reads a token. Motion is a site-only override of the brand's 14px-fade rule
    (decided 2026-09-24); client sites keep the brand rule.
    ========================================================================== */
 
 @font-face { font-family: "Anton"; src: url("../fonts/anton-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Instrument Sans"; src: url("../fonts/instrument-sans-var.woff2") format("woff2"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-var.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-display: swap; }
 @font-face { font-family: "Instrument Serif"; src: url("../fonts/instrument-serif-italic.woff2") format("woff2"); font-style: italic; font-weight: 400; font-display: swap; }
 /* Metric-matched fallbacks so the swap doesn't shift layout */
 @font-face { font-family: "Anton Fallback"; src: local("Impact"), local("Arial Narrow Bold"); size-adjust: 96%; ascent-override: 118%; descent-override: 33%; }
@@ -32,7 +32,7 @@
   /* Type */
   --f-display: "Anton", "Anton Fallback", Impact, sans-serif;
   --f-serif: "Instrument Serif", Georgia, serif;
-  --f-body: "Instrument Sans", "Sans Fallback", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "Archivo", "Sans Fallback", "Helvetica Neue", Arial, sans-serif;
   --t-hero: clamp(7rem, 34vw, 28rem);
   --t-display: clamp(3rem, 8.4vw, 8rem);
   --t-section: clamp(2.5rem, 6vw, 5.5rem);
@@ -120,9 +120,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .body { max-width: var(--measure); }
 .muted { color: var(--muted); }
 .on-ink .muted { color: var(--muted-ink); }
-.eyebrow { font-size: var(--t-eyebrow); font-weight: 600; letter-spacing: var(--track-eyebrow); text-transform: uppercase; display: inline-flex; align-items: center; gap: var(--s-3); }
-.eyebrow::before { content: ""; width: 1.5rem; height: 2px; background: var(--brick); }
-.on-ink .eyebrow::before { background: var(--brick-ink); }
+.eyebrow { font-size: var(--t-eyebrow); font-weight: 650; font-stretch: 118%; letter-spacing: var(--track-eyebrow); text-transform: uppercase; display: inline-flex; align-items: baseline; gap: 0.35em; }
+/* The logo's brick dot closes every section label (no dash-like rule in front). */
+.eyebrow::after { content: ""; width: 0.42em; height: 0.42em; border-radius: 50%; background: var(--brick); flex: none; }
+.on-ink .eyebrow::after { background: var(--brick-ink); }
 .accent { color: var(--brick); }
 .on-ink .accent { color: var(--brick-ink); }
 .caption { font-size: var(--t-caption); font-weight: 500; }
@@ -567,7 +568,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .index { display: grid; gap: var(--s-7); margin-top: var(--s-7); }
 .index__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink-3); }
 .index__row { display: grid; gap: var(--s-4); padding: var(--s-6) 0; border-bottom: 1px solid var(--ink-3); }
-.index__name { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.4rem, 4.4vw, 4.5rem); line-height: 0.92; letter-spacing: var(--track-display); text-wrap: balance; transition: color var(--d-base) var(--ease-out), transform var(--d-slow) var(--ease-out); }
+.index__name { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.4rem, 3.9vw, 4.25rem); line-height: 0.92; letter-spacing: var(--track-display); text-wrap: balance; transition: color var(--d-base) var(--ease-out), transform var(--d-slow) var(--ease-out); }
 .index__meta { display: grid; gap: var(--s-2); max-width: 46ch; transition: opacity var(--d-base) var(--ease-out); }
 .index__type { font-size: var(--t-small); color: var(--muted-ink); }
 .index__desc { color: color-mix(in srgb, var(--paper) 84%, transparent); }
@@ -583,6 +584,9 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .im--site { position: relative; overflow: hidden; height: 100%; }
 .im--site img { display: block; width: 100%; height: auto; }
 .index__media .im--site { aspect-ratio: 16 / 10; }
+.im--video { height: 100%; }
+.im--video video, .im--video img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.index__media .im--video { aspect-ratio: 16 / 9; }
 .im--thumbs { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-3); padding: var(--s-4); align-content: center; height: 100%; }
 .im--thumbs img { width: 100%; height: auto; border-radius: 4px; display: block; }
 .im--covers { position: relative; height: 100%; min-height: 16rem; }
@@ -592,7 +596,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .im--covers img:nth-child(2) { z-index: 1; }
 
 @media (min-width: 60rem) {
-  .index { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: var(--s-8); align-items: start; }
+  .index { grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: var(--s-7); align-items: start; }
   .index__media { display: none; }
   .index__row { padding: var(--s-6) 0 var(--s-6); cursor: default; }
   .index__name { color: #55554F; }
@@ -603,12 +607,23 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
   .stage__item.is-active .im--thumbs { animation: index-scroll 12s var(--ease-io) 1.2s infinite alternate; }
   .index__row.is-active .index__name { color: var(--paper); transform: translateX(0.35rem); }
   .index__row.is-active .index__meta { opacity: 1; }
-  .index__stage { display: block; position: sticky; top: calc(var(--header-h) + var(--s-6)); height: calc(100vh - var(--header-h) - var(--s-8)); max-height: 46rem; }
-  .stage { position: relative; height: 100%; border-radius: var(--radius-card); overflow: hidden; background: var(--ink-2); }
-  .stage__item { position: absolute; inset: 0; visibility: hidden; }
-  .stage__item.is-active { visibility: visible; }
+  .index__stage { display: block; position: sticky; top: calc(var(--header-h) + var(--s-6)); height: min(calc(100vh - var(--header-h) - var(--s-8)), 40rem); }
+  /* Carousel: every project sits on one track; the active one is centred and full, its neighbours
+     peek in at the sides, smaller and turned away. JS moves the track; without JS item one shows. */
+  .stage { position: relative; height: 100%; overflow: hidden; }
+  .stage__track { position: absolute; inset: 0; display: flex; gap: var(--s-5); padding-inline: 7%; will-change: transform; }
+  .stage__item { position: relative; flex: 0 0 86%; height: 100%; border-radius: var(--radius-card); overflow: hidden; background: var(--ink-2); transform-origin: 50% 50%; cursor: pointer; }
+  .stage__item.is-active { cursor: default; }
+  .stage .im--video { display: grid; place-items: center; background: #0b0b0b; }
+  .im__frame { position: relative; width: 100%; aspect-ratio: 16 / 9; }
+  .im__frame img, .im__frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .im__frame video { opacity: 0; transition: opacity 0.6s var(--ease-out); }
+  .im__frame video.is-playing { opacity: 1; }
+  .stage__inner { position: absolute; inset: 0; will-change: transform; }
   .stage .im--site img { transform: translateY(0); }
   .stage__item.is-active .im--site img { animation: index-scroll 16s var(--ease-io) 1.2s infinite alternate; }
 }
 @keyframes index-scroll { to { transform: translateY(calc(-100% + var(--view-h, 40rem))); } }
 @media (prefers-reduced-motion: reduce) { .stage__item.is-active .im--site img, .stage__item.is-active .im--thumbs { animation: none; } }
+.reel__link { display: block; height: 100%; color: inherit; text-decoration: none; border-radius: var(--radius-card); }
+.reel__link:focus-visible { outline-offset: 3px; }

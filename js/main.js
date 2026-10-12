@@ -76,26 +76,63 @@
   // Year
   d.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 
-  /* Work index: the row on the centre line (or under the pointer) drives the stage.
-     Works without motion; with motion the next piece of work wipes up over the last. */
+  /* Work index: the row on the centre line (or under the pointer) picks the project, and the stage
+     is a carousel: the track glides to it, neighbours shrink and turn away, the pictures move
+     slower than their frames (depth). Clicking a neighbour selects it. Reduced motion: it jumps. */
   d.querySelectorAll('[data-index]').forEach((ix) => {
     const rows = [...ix.querySelectorAll('.index__row')];
     const items = [...ix.querySelectorAll('.stage__item')];
+    const track = ix.querySelector('.stage__track');
     let cur = 0;
+    ix.querySelectorAll('.stage video').forEach((v) => {
+      v.addEventListener('playing', () => v.classList.add('is-playing'));
+      v.addEventListener('pause', () => v.classList.remove('is-playing'));
+    });
+    const videos = () => items.forEach((el, j) => {
+      const v = el.querySelector('video');
+      if (!v) return;
+      if (j === cur && !reduce) { v.play().catch(() => {}); } else { v.pause(); }
+    });
+    const layout = (instant) => {
+      if (!track || !desktop()) return;
+      const w = items[0].offsetWidth;
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      const g = window.gsap;
+      const x = -cur * (w + gap);
+      const look = (j) => {
+        const dd = j - cur, a = Math.abs(dd);
+        return { s: a ? 0.84 : 1, r: Math.max(-22, Math.min(22, -dd * 16)), o: a === 0 ? 1 : a === 1 ? 0.42 : 0.15, px: Math.max(-14, Math.min(14, -dd * 12)) };
+      };
+      if (g && (instant || reduce)) {
+        g.set(track, { x });
+        items.forEach((el, j) => { const L = look(j); g.set(el, { transformPerspective: 1400, scale: L.s, rotateY: L.r, opacity: L.o }); g.set(el.firstElementChild, { xPercent: L.px }); });
+        return;
+      }
+      if (!g) {
+        track.style.transform = `translate3d(${x}px,0,0)`;
+        items.forEach((el, j) => {
+          const L = look(j);
+          el.style.transform = `perspective(1400px) scale(${L.s}) rotateY(${L.r}deg)`;
+          el.style.opacity = L.o;
+          el.firstElementChild.style.transform = `translateX(${L.px}%)`;
+        });
+        return;
+      }
+      g.to(track, { x, duration: 1.2, ease: 'expo.inOut', overwrite: true });
+      items.forEach((el, j) => {
+        const L = look(j);
+        g.to(el, { transformPerspective: 1400, scale: L.s, rotateY: L.r, opacity: L.o, duration: 1.2, ease: 'expo.inOut', overwrite: true });
+        g.to(el.firstElementChild, { xPercent: L.px, duration: 1.45, ease: 'expo.inOut', overwrite: true });
+      });
+    };
     const show = (i) => {
-      if (i === cur || !desktop()) return;
-      const prev = items[cur], next = items[i];
+      if (i === cur || i < 0 || !desktop()) return;
       rows[cur].classList.remove('is-active');
       rows[i].classList.add('is-active');
       cur = i;
-      next.classList.add('is-active');
-      const settle = () => items.forEach((el, j) => { if (j !== cur) el.classList.remove('is-active'); el.style.zIndex = ''; });
-      const g = window.gsap;
-      if (reduce || !g) { settle(); return; }
-      g.killTweensOf(items);
-      items.forEach((el) => { el.style.zIndex = el === next ? 2 : (el === prev ? 1 : 0); });
-      g.fromTo(next, { clipPath: 'inset(100% 0% 0% 0% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', duration: 0.95, ease: 'expo.out', onComplete: settle });
-      g.fromTo(next.firstElementChild, { scale: 1.1, yPercent: 6 }, { scale: 1, yPercent: 0, duration: 1.3, ease: 'expo.out', clearProps: 'transform' });
+      items.forEach((el, j) => el.classList.toggle('is-active', j === cur));
+      layout(false);
+      videos();
       sizeViews();
     };
     // The row crossing the middle of the screen is the active one.
@@ -106,11 +143,14 @@
       rows.forEach((r, i) => { const b = r.getBoundingClientRect(); if (b.top <= mid && b.bottom > mid) show(i); });
     };
     addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(pick); } }, { passive: true });
-    addEventListener('load', pick);
+    addEventListener('load', () => { layout(true); videos(); pick(); });
+    addEventListener('resize', () => layout(true));
+    layout(true);
     rows.forEach((r, i) => {
       r.addEventListener('pointerenter', () => show(i));
       r.addEventListener('focusin', () => show(i));
     });
+    items.forEach((el, j) => el.addEventListener('click', () => show(j)));
   });
 
   /* ---------- Motion ---------- */
@@ -303,6 +343,9 @@
       gsap.set(track, { x, skewX: gsap.utils.clamp(-8, 8, -boost * 0.6) });
     });
     ScrollTrigger.create({ trigger: m, start: 'top bottom', end: 'bottom top', onUpdate: (self) => { boost = gsap.utils.clamp(-14, 14, Math.abs(self.getVelocity()) / 250); } });
+    // No visible pause button (Hector, 2026-10-11): it stops while the pointer is over it, and reduced motion never starts it.
+    m.addEventListener('pointerenter', () => { paused = true; });
+    m.addEventListener('pointerleave', () => { paused = false; });
     const btn = m.querySelector('.marquee__pause');
     btn?.addEventListener('click', () => {
       paused = !paused;
