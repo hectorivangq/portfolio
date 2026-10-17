@@ -25,7 +25,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/styles.css?v=23">
+<link rel="stylesheet" href="/css/styles.css?v=28">
 <script>
 /* Hide animated elements before first paint only when motion will run. */
 (function(){var r=document.documentElement;if(!matchMedia('(prefers-reduced-motion: reduce)').matches){r.classList.add('motion');setTimeout(function(){r.classList.add('motion-ready')},3000);}})();
@@ -54,7 +54,7 @@
   <div class="container">
     <a class="cs-back" href="/work/"><svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M14 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6"/></svg>All projects</a>
     <p class="eyebrow cs-status" data-hero-in>Early project, at no cost</p>
-    <h1 class="cs-title" id="page-title">EXKLUSIVE RENTALS</h1>
+    <h1 class="cs-title" id="page-title"><span class="visually-hidden">EXKLUSIVE RENTALS</span><span aria-hidden="true"><span class="sw"><span style="--i:0">EXKLUSIVE</span></span> <span class="sw"><span style="--i:1">RENTALS</span></span></span></h1>
     <div class="cs-intro">
       <p class="lede" data-hero-in>Fleet, rates, payment methods and every rule in one place, so renters book without a back-and-forth.</p>
       <div class="btn-row" data-hero-in><a class="btn" href="https://exklusiverentalsllc.com/" target="_blank" rel="noopener">Visit the live site<span class="visually-hidden"> exklusiverentalsllc.com (opens in a new tab)</span><svg class="arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M4 10L10 4M5 4h5v5" stroke="currentColor" stroke-width="1.6"/></svg></a><a class="btn btn--ghost" href="/mockup/">Get a free mockup of yours<svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"/></svg></a></div>
@@ -64,7 +64,7 @@
 </section>
 <section class="cs-show" style="--ground:#1F6BE0" aria-label="Desktop and phone." data-cs-show>
   <div class="cs-show__inner">
-    <div class="cs-show__desk"><img src="/img/exklusiverentalsllc-tall.webp" width="1400" height="2625" alt="Full page of exklusiverentalsllc.com on a computer" decoding="async" fetchpriority="high" style="view-transition-name:shot-exklusive-rentals"></div>
+    <div class="cs-show__desk"><img src="/img/exklusiverentalsllc-tall.webp" srcset="/img/exklusiverentalsllc-tall-700.webp 700w, /img/exklusiverentalsllc-tall.webp 1400w" sizes="(min-width: 60rem) 64vw, 92vw" width="1400" height="2625" alt="Full page of exklusiverentalsllc.com on a computer" decoding="async" style="view-transition-name:shot-exklusive-rentals"></div>
     <div class="cs-show__phone"><img src="/img/exklusiverentalsllc-mobile.webp" width="600" height="1299" alt="Full page of exklusiverentalsllc.com on a phone" decoding="async"></div>
   </div>
 </section>
@@ -93,7 +93,7 @@
       <span class="cs-next__name">COLLEGE CONVERSATIONS</span>
       <span class="cs-next__line">A free library for Dr. Fedor&#x27;s viewers: 75 hand-checked resources, a checklist and two calculators. Plus a new logo for her channel.</span>
     </span>
-    <span class="cs-next__shot" aria-hidden="true"><img src="/img/collegeconversations-tall.webp" width="1400" height="2625" alt="" loading="lazy" decoding="async"></span>
+    <span class="cs-next__shot" aria-hidden="true"><img src="/img/collegeconversations-tall-700.webp" width="1400" height="2625" alt="" loading="lazy" decoding="async"></span>
   </a>
 </section>
 <section class="cta" aria-labelledby="cta-title">
@@ -129,6 +129,6 @@
 <script src="/js/gsap.min.js" defer></script>
 <script src="/js/ScrollTrigger.min.js" defer></script>
 <script src="/js/lenis.min.js" defer></script>
-<script src="/js/main.js?v=15" defer></script>
+<script src="/js/main.js?v=20" defer></script>
 </body>
 </html>

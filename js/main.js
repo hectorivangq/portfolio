@@ -73,6 +73,15 @@
   });
   fit(); addEventListener('resize', fit); d.fonts?.ready.then(fit);
 
+  // Before and after: the slider compares when there's no scroll scrub (reduced motion, no GSAP)
+  d.querySelectorAll('[data-ba]').forEach((ba) => {
+    const range = ba.querySelector('.ba__range input');
+    // The slider is where the line sits (left to right); --pos is how much of the new site shows (from the right)
+    const set = () => { const p = 1 - range.value / 100; ba.style.setProperty('--pos', p); ba.dataset.step = p < 0.34 ? 0 : p > 0.66 ? 2 : 1; };
+    range?.addEventListener('input', set);
+    if (range) set();
+  });
+
   // Year
   d.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
 
@@ -238,10 +247,11 @@
   /* ---------- Page hero (service pages) ---------- */
   d.querySelectorAll('.page-hero').forEach((ph) => {
     const title = ph.querySelector('.page-hero__title');
-    const words = title ? split(title, 'words') : [];
+    const css = title?.classList.contains('is-css-split');  // already rising in CSS (build.py)
+    const words = title && !css ? split(title, 'words') : [];
     const tl = gsap.timeline({ onStart: reveal });
-    tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.06, onComplete: () => title.classList.add('is-split-done') }, 0.05)
-      .fromTo(ph.querySelectorAll('[data-hero-in]'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08, duration: 1 }, 0.45);
+    if (words.length) tl.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.06, onComplete: () => title.classList.add('is-split-done') }, 0.05);
+    // The eyebrow, lede and buttons settle in CSS (styles.css, .page-hero [data-hero-in])
     const bg = ph.querySelector('.page-hero__bg');
     if (bg) {
       tl.fromTo(bg, { yPercent: 18, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 1.8 }, 0);
@@ -249,14 +259,9 @@
     }
   });
 
-  /* ---------- Case page hero: the name rises out of a mask, the rest follows ---------- */
-  d.querySelectorAll('.cs-hero').forEach((ch) => {
-    const title = ch.querySelector('.cs-title');
-    const words = title ? split(title, 'words') : [];
-    gsap.timeline({ onStart: reveal })
-      .fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.07, onComplete: () => title.classList.add('is-split-done') }, 0.05)
-      .fromTo(ch.querySelectorAll('[data-hero-in]'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08, duration: 1 }, 0.35);
-  });
+  /* ---------- Case page hero ---------- */
+  // (the name and copy rise in CSS; nothing waits for scripts)
+  if (d.querySelector('.cs-hero')) reveal();
 
   if (!hero && !d.querySelector('.page-hero, .cs-hero')) reveal();
 
@@ -354,6 +359,42 @@
     });
   });
 
+  /* ---------- Home before and after: pin the band, flatten the screen, wipe old into new ----------
+     One note at a time follows the wipe; the closing line and buttons land at the end. */
+  d.querySelectorAll('[data-ba]').forEach((ba) => {
+    ba.classList.add('is-scrub');
+    ba.style.setProperty('--pos', 0);
+    const notes = [...ba.querySelectorAll('.ba__note')];
+    const frame = ba.querySelector('.ba__frame');
+    const phone = ba.querySelector('.ba__phone');
+    let step = -1;
+    const setStep = (n, done) => {
+      ba.classList.toggle('is-done', done);
+      if (n === step) return;
+      step = n;
+      ba.dataset.step = n;
+      notes.forEach((el, i) => el.classList.toggle('is-active', i === n));
+    };
+    setStep(0, false);
+    const pos = { v: 0 };
+    const mm = gsap.matchMedia();
+    mm.add({ wide: '(min-width: 60rem)', narrow: '(max-width: 59.99rem)' }, (ctx) => {
+      const tl = gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: ba, start: 'top top', end: ctx.conditions.wide ? '+=220%' : '+=170%', pin: ba.querySelector('.ba__pin'), scrub: 0.7,
+        },
+        // The scrubbed timeline (not the raw scroll) decides the note, so text and picture stay in step
+        onUpdate: () => setStep(pos.v < 0.12 ? 0 : pos.v < 0.9 ? 1 : 2, tl.progress() > 0.9),
+      });
+      tl.fromTo(frame, { rotateX: 14, scale: 0.9, transformPerspective: 1600, y: 30 }, { rotateX: 0, scale: 1, y: 0, duration: 0.16, ease: 'power2.out' })
+        .fromTo(phone, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.16, ease: 'power2.out' }, 0.04)
+        .to(pos, { v: 1, duration: 0.62, onUpdate: () => ba.style.setProperty('--pos', pos.v) }, 0.2)
+        .to({}, { duration: 0.18 });
+      return () => { pos.v = 0; ba.style.setProperty('--pos', 0); };
+    });
+  });
+
   /* Next project band: the name rises as it enters */
   d.querySelectorAll('.cs-next__name').forEach((n) => {
     gsap.fromTo(n, { yPercent: 60, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: n, start: 'top 90%', once: true } });
@@ -446,7 +487,7 @@
   d.querySelectorAll('.quote__text').forEach((q) => {
     const text = q.textContent.trim().replace(/\s+/g, ' ');
     q.innerHTML = `<span class="visually-hidden">${text}</span><span aria-hidden="true">${text.split(' ').map((w) => `<span class="fill-word">${w}</span>`).join(' ')}</span>`;
-    gsap.fromTo(q.querySelectorAll('.fill-word'), { opacity: 0.22 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: q, start: 'top 82%', end: 'bottom 55%', scrub: true } });
+    gsap.fromTo(q.querySelectorAll('.fill-word'), { opacity: 0.5 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: q, start: 'top 82%', end: 'bottom 55%', scrub: true } });
   });
 
   /* ---------- Process: the rule draws across as the steps enter ---------- */
