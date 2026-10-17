@@ -60,7 +60,7 @@
   });
 
   // Browser-frame screenshots: measure the viewport so the hover scroll stops at the bottom
-  const sizeViews = () => d.querySelectorAll('.browser__view, .stage .im--site, .stage__item').forEach((v) => v.style.setProperty('--view-h', v.clientHeight + 'px'));
+  const sizeViews = () => d.querySelectorAll('.browser__view, .stage .im--site, .stage__item, .pcard__window').forEach((v) => v.style.setProperty('--view-h', v.clientHeight + 'px'));
   addEventListener('resize', sizeViews); addEventListener('load', sizeViews); sizeViews();
 
   // Fit display lines to their container width (footer name)
@@ -249,7 +249,16 @@
     }
   });
 
-  if (!hero && !d.querySelector('.page-hero')) reveal();
+  /* ---------- Case page hero: the name rises out of a mask, the rest follows ---------- */
+  d.querySelectorAll('.cs-hero').forEach((ch) => {
+    const title = ch.querySelector('.cs-title');
+    const words = title ? split(title, 'words') : [];
+    gsap.timeline({ onStart: reveal })
+      .fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.07, onComplete: () => title.classList.add('is-split-done') }, 0.05)
+      .fromTo(ch.querySelectorAll('[data-hero-in]'), { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.08, duration: 1 }, 0.35);
+  });
+
+  if (!hero && !d.querySelector('.page-hero, .cs-hero')) reveal();
 
   /* ---------- Work: pinned horizontal gallery on desktop ---------- */
   const work = d.querySelector('.work');
@@ -324,6 +333,30 @@
     const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
     tl.fromTo(el, { clipPath: 'inset(12% 8% 12% 8% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', duration: 1.4, ease: 'expo.out' });
     if (inner) tl.fromTo(inner, { scale: 1.12 }, { scale: 1, duration: 1.6, ease: 'expo.out' }, 0);
+  });
+
+  /* ---------- Case page: the live site scrolls inside its window as you scroll the page ----------
+     Desktop pins the band and scrubs the capture from top to bottom; phones scrub it while the band
+     passes. Reduced motion never gets here, so it shows the top of the page. */
+  d.querySelectorAll('[data-cs-show]').forEach((band) => {
+    const win = band.querySelector('.cs-show__desk');
+    const img = win?.querySelector('img');
+    if (!img) return;
+    const travel = () => -(img.getBoundingClientRect().height - win.clientHeight);
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 60rem)', () => {
+      gsap.fromTo(img, { y: 0 }, { y: travel, ease: 'none', scrollTrigger: { trigger: band, start: 'top top', end: () => '+=' + Math.max(600, -travel() * 0.9), pin: true, scrub: 0.8, invalidateOnRefresh: true } });
+      const phone = band.querySelector('.cs-show__phone');
+      if (phone) gsap.fromTo(phone, { yPercent: 12 }, { yPercent: -6, ease: 'none', scrollTrigger: { trigger: band, start: 'top bottom', end: 'bottom top', scrub: true } });
+    });
+    mm.add('(max-width: 59.99rem)', () => {
+      gsap.fromTo(img, { y: 0 }, { y: travel, ease: 'none', scrollTrigger: { trigger: band, start: 'top 70%', end: 'bottom top', scrub: 0.6, invalidateOnRefresh: true } });
+    });
+  });
+
+  /* Next project band: the name rises as it enters */
+  d.querySelectorAll('.cs-next__name').forEach((n) => {
+    gsap.fromTo(n, { yPercent: 60, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: n, start: 'top 90%', once: true } });
   });
 
   /* ---------- Marquee: constant drift, speeds up and skews with scroll ---------- */

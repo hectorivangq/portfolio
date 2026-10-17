@@ -258,17 +258,23 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .svc__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .svc__thumb--strip { aspect-ratio: 1712 / 728; background: var(--ink); }
 .svc__thumb--strip img { object-fit: contain; }
-.svc::before { content: ""; position: absolute; inset: 0; background: var(--ink); transform: scaleY(0); transform-origin: bottom; transition: transform var(--d-slow) var(--ease-out); z-index: 0; }
+/* The fill runs edge to edge (past the container) so right-aligned text never sits on its edge,
+   and the text only turns light after the fill is behind it (Hector, 2026-10-17). */
+#services { overflow-x: clip; }
+.svc::before { content: ""; position: absolute; top: -1px; bottom: 0; left: calc((100% - 100vw) / 2); right: calc((100% - 100vw) / 2); background: var(--ink); transform: scaleY(0); transform-origin: bottom; transition: transform var(--d-base) var(--ease-out); z-index: 0; }
+.svc__meta, .svc__price { transition: color var(--d-fast) var(--ease-out); }
 @media (hover: hover) and (min-width: 60rem) {
   .svc a { grid-template-columns: 1fr 22rem; padding-block: var(--s-6); }
   .svc__meta { grid-column: 2; justify-self: end; text-align: right; justify-items: end; }
   .svc__thumb { display: none; }
   .svc:hover::before { transform: scaleY(1); transform-origin: top; }
-  .svc:hover a { color: var(--paper); }
-  .svc:hover .svc__num { color: var(--muted-ink); }
-  .svc:hover .svc__name { transform: translateX(1.5rem); color: var(--paper); }
+  .svc:hover::before { transition-duration: 420ms; }
+  .svc:hover .svc__meta, .svc:hover .svc__price { color: var(--paper); transition: color 220ms var(--ease-out) 140ms; }
+  .svc:hover .svc__name { transform: translateX(1.5rem); color: var(--paper); transition: transform var(--d-slow) var(--ease-out), color 220ms var(--ease-out) 90ms; }
   .svc:hover .svc__price .arrow { transform: translateX(4px); }
 }
+.svc-note { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s-3) var(--s-6); margin-top: var(--s-6); }
+.svc-note p { font-size: var(--t-body); max-width: 52ch; }
 .svc-preview { position: fixed; left: 0; top: 0; z-index: 30; width: 17rem; aspect-ratio: 4 / 3; pointer-events: none; border-radius: var(--radius-card); overflow: hidden; visibility: hidden; box-shadow: 0 24px 48px -18px rgba(0,0,0,0.45); display: none; }
 .svc-preview img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; clip-path: inset(100% 0 0 0); }
 .svc-preview img.is-on { clip-path: inset(0 0 0 0); }
@@ -563,7 +569,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
   .reel__views { font-size: 1.25rem; }
 }
 
-/* ---------- Work index (home "Real clients. Real links.") ----------
+/* ---------- Work index (home "Real businesses. Real links.") ----------
    Names as an index with the real link on every row; on desktop a sticky stage shows the
    active project's actual work, unframed (no device mockups). */
 .index { display: grid; gap: var(--s-7); margin-top: var(--s-7); }
@@ -640,3 +646,103 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 @media (prefers-reduced-motion: reduce) { .stage__item.is-active .im--site img, .stage__item.is-active .im--thumbs { animation: none; } }
 .reel__link { display: block; height: 100%; color: inherit; text-decoration: none; border-radius: var(--radius-card); }
 .reel__link:focus-visible { outline-offset: 3px; }
+
+/* ---------- Projects grid (/work/, and above the prices on /websites/; Board 008) ----------
+   Appli Studio's project grid, our way: no device frames or pill tags. Each live site's full-page
+   capture sits in a window on the client's own colour (--ground) and scrolls on hover. The sixth
+   slot is the reader's own site, drawn as a dashed fill-in. */
+.pgrid { list-style: none; margin: var(--s-8) 0 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 40rem) { .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .pgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-6) var(--s-5); } }
+.pcard__link { display: grid; grid-template-rows: auto 1fr; height: 100%; padding: var(--s-3); border-radius: calc(var(--radius-card) + 4px); background: var(--paper); color: var(--text); text-decoration: none; transition: transform var(--d-slow) var(--ease-out), box-shadow var(--d-slow) var(--ease-out); }
+.pcard__media { position: relative; display: block; aspect-ratio: 5 / 4; border-radius: var(--radius-card); overflow: hidden; background: var(--ground); isolation: isolate; }
+.pcard__window { position: absolute; left: 10%; right: 10%; top: 10%; bottom: 0; display: block; overflow: hidden; border-radius: 6px 6px 0 0; background: #fff; box-shadow: 0 30px 60px -28px rgba(0, 0, 0, 0.55); transition: transform var(--d-slow) var(--ease-out); }
+.pcard__window img { display: block; width: 100%; height: auto; transform: translateY(0); transition: transform 1.2s var(--ease-out); }
+.pcard__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); padding: var(--s-5) var(--s-2) var(--s-2); }
+.pcard__foot { display: flex; width: 100%; align-items: baseline; justify-content: space-between; gap: var(--s-3); margin-top: auto; padding-top: var(--s-4); }
+.pcard__domain { font-size: var(--t-caption); color: var(--muted); }
+.pcard__type { font-size: var(--t-eyebrow); font-weight: 650; font-stretch: 118%; letter-spacing: var(--track-eyebrow); text-transform: uppercase; color: var(--muted); }
+.pcard__name { font-family: var(--f-display); font-size: clamp(2rem, 2.9vw, 2.75rem); line-height: 0.95; letter-spacing: var(--track-display); text-wrap: balance; }
+.pcard__line { font-size: var(--t-small); color: var(--muted); max-width: 42ch; }
+.pcard__cta { display: inline-flex; align-items: center; gap: var(--s-2); font-weight: 600; font-size: var(--t-small); border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+.pcard__cta .arrow { transition: transform var(--d-base) var(--ease-out); }
+@media (hover: hover) {
+  .pcard__link:hover { transform: translateY(-4px); box-shadow: 0 28px 50px -34px rgba(18, 18, 18, 0.45); }
+  .pcard__link:hover .pcard__window { transform: translateY(-6px); }
+  .pcard__link:hover .pcard__window img { transform: translateY(calc(-100% + var(--view-h, 300px))); transition: transform 6.5s cubic-bezier(0.45, 0, 0.55, 1); }
+  .pcard__link:hover .pcard__cta .arrow { transform: translateX(4px); }
+}
+.pcard__link:focus-visible { outline: 2px solid var(--brick); outline-offset: 3px; }
+/* The reader's own site: dashed fill-in */
+.pcard--yours .pcard__link { background: transparent; border: 1.5px dashed color-mix(in srgb, var(--text) 38%, transparent); }
+.pcard--yours .pcard__media { background: transparent; }
+.pcard--yours .pcard__window { background: transparent; box-shadow: none; border: 1.5px dashed color-mix(in srgb, var(--text) 38%, transparent); border-bottom: 0; padding: 12% 10%; display: grid; align-content: start; gap: 9%; }
+.pcard--yours .pcard__window i { display: block; height: 0; border-top: 1.5px dashed color-mix(in srgb, var(--text) 38%, transparent); }
+.pcard--yours .pcard__window i:nth-child(1) { width: 70%; border-top-width: 3px; }
+.pcard--yours .pcard__window i:nth-child(2) { width: 55%; border-top-width: 3px; }
+.pcard--yours .pcard__window i:nth-child(3) { width: 85%; }
+.pcard--yours .pcard__window i:nth-child(4) { width: 34%; height: 2.6em; border: 1.5px dashed var(--brick); border-radius: var(--radius); }
+.pcard--yours .pcard__cta { color: var(--brick); }
+.pgrid__note { margin-top: var(--s-7); max-width: var(--measure); }
+.work-index__all { margin-top: var(--s-7); }
+.on-ink .work-index__all a { color: var(--paper); }
+.index__url--case { color: var(--brick-ink, #E4564A); }
+
+/* ---------- Case page ---------- */
+.cs-hero { background: var(--ink); color: var(--paper); padding-top: calc(var(--header-h) + var(--s-7)); padding-bottom: var(--s-7); }
+.cs-hero .lede { color: color-mix(in srgb, var(--paper) 86%, transparent); }
+.cs-back { display: flex; width: max-content; align-items: center; gap: var(--s-2); font-size: var(--t-small); font-weight: 600; color: var(--muted-ink); text-decoration: none; }
+.cs-back:hover { color: var(--paper); }
+.cs-back .arrow { transition: transform var(--d-base) var(--ease-out); }
+.cs-back:hover .arrow { transform: translateX(-3px); }
+.cs-status { display: flex; width: max-content; margin-top: var(--s-7); }
+.cs-title { margin-top: var(--s-4); font-family: var(--f-display); font-weight: 400; font-size: clamp(3.5rem, 10.5vw, 10rem); line-height: 0.9; letter-spacing: var(--track-display); text-wrap: balance; }
+.cs-intro { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
+@media (min-width: 60rem) { .cs-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--s-8); } }
+.cs-facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: var(--s-7); border-top: var(--hair-ink); }
+.cs-facts div { padding: var(--s-4) var(--s-4) var(--s-4) 0; border-bottom: var(--hair-ink); }
+.cs-facts dt { font-size: var(--t-caption); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-ink); }
+.cs-facts dd { margin: var(--s-1) 0 0; font-weight: 600; }
+@media (min-width: 60rem) { .cs-facts { grid-template-columns: repeat(5, minmax(0, 1fr)); } .cs-facts div { border-bottom: 0; } .cs-facts div + div { padding-left: var(--s-4); border-left: var(--hair-ink); } }
+/* The live site scrolls inside its window as the page scrolls (main.js); the phone sits beside it */
+.cs-show { background: var(--ground); padding: clamp(2.5rem, 6vw, 5.5rem) var(--gutter) 0; overflow: hidden; }
+.cs-show__inner { max-width: var(--max); margin: 0 auto; display: grid; gap: var(--s-6); align-items: end; }
+.cs-show__desk { height: min(78svh, 54rem); overflow: hidden; border-radius: 10px 10px 0 0; background: #fff; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6); }
+.cs-show__desk img { display: block; width: 100%; height: auto; will-change: transform; }
+.cs-show__phone { display: none; }
+@media (min-width: 60rem) {
+  .cs-show { min-height: 100svh; display: flex; align-items: flex-end; }
+  .cs-show__inner { width: 100%; grid-template-columns: minmax(0, 1fr) minmax(0, 15.5rem); }
+  .cs-show__phone { display: block; align-self: center; margin-bottom: var(--s-8); border-radius: 26px; overflow: hidden; background: #000; box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.6), 0 0 0 6px rgba(0, 0, 0, 0.9); }
+  .cs-show__phone img { display: block; width: 100%; height: auto; }
+}
+.stats--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 48rem) { .stats--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.cs-scores-note { margin-top: var(--s-5); max-width: var(--measure); }
+.cs-story { display: grid; gap: var(--s-6); margin: var(--s-8) 0 0; }
+.cs-story div { padding-top: var(--s-4); border-top: var(--hair); }
+.cs-story dt { font-size: var(--t-eyebrow); font-weight: 650; font-stretch: 118%; letter-spacing: var(--track-eyebrow); text-transform: uppercase; color: var(--brick); }
+.cs-story dd { margin: var(--s-3) 0 0; font-size: var(--t-body); max-width: 40ch; }
+@media (min-width: 60rem) { .cs-story { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cs-did { display: grid; gap: var(--s-4); margin-top: var(--s-8); }
+.cs-did__title { font-size: var(--t-eyebrow); font-weight: 650; font-stretch: 118%; letter-spacing: var(--track-eyebrow); text-transform: uppercase; }
+.cs-did ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
+.cs-did li { font-family: var(--f-display); font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1.05; }
+.cs-did li + li::before { content: ""; display: inline-block; width: 0.28em; height: 0.28em; margin-right: var(--s-5); border-radius: 50%; background: var(--brick); vertical-align: middle; transform: translateY(-0.12em); }
+.cs-quote { margin-top: var(--s-8); }
+@media (min-width: 60rem) { .cs-quote { grid-template-columns: 16rem minmax(0, 1fr); } }
+/* Next project: the whole band is the link */
+.cs-next__link { position: relative; display: block; overflow: hidden; background: var(--ink); color: var(--paper); text-decoration: none; padding-block: var(--section); isolation: isolate; border-bottom: var(--hair-ink); }
+.cs-next__in { position: relative; z-index: 2; display: grid; gap: var(--s-4); justify-items: start; }
+.cs-next__name { font-family: var(--f-display); font-size: clamp(3rem, 9vw, 8rem); line-height: 0.9; letter-spacing: var(--track-display); transition: transform var(--d-slow) var(--ease-out); }
+.cs-next__line { max-width: 44ch; color: var(--muted-ink); }
+.cs-next__shot { position: absolute; z-index: 1; right: var(--gutter); top: 14%; width: min(34vw, 30rem); height: 120%; border-radius: 10px 10px 0 0; overflow: hidden; background: var(--ground); padding: 6% 6% 0; opacity: 0.38; transform: translateY(8%); transition: opacity var(--d-slow) var(--ease-out), transform var(--d-slow) var(--ease-out); }
+.cs-next__shot img { width: 100%; height: auto; border-radius: 6px 6px 0 0; }
+@media (hover: hover) { .cs-next__link:hover .cs-next__shot { opacity: 0.72; transform: translateY(0); } .cs-next__link:hover .cs-next__name { transform: translateX(1rem); } }
+@media (max-width: 47.99rem) { .cs-next__shot { display: none; } }
+
+/* Card to case page: the screenshot carries across (cross-document view transitions; browsers
+   without support just load the page) */
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: 0.6s; animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+@media (prefers-reduced-motion: reduce) { @view-transition { navigation: none; } }
