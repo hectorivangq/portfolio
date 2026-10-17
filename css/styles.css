@@ -621,7 +621,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
   .index__media { display: none; }
   .index__row { padding: var(--s-6) 0 var(--s-6); cursor: default; }
   .index__name { color: #66665F; }
-  .index__row .index__meta { opacity: 0.62; }
+  .index__row .index__meta { opacity: 0.8; }  /* AA on ink for the inactive rows (Lighthouse 2026-10-17) */
   .stage .im--covers { --cover-h: min(70%, 36vw); }
   .stage .im--thumbs { grid-template-columns: 1fr; align-content: start; height: auto; padding: var(--s-5); gap: var(--s-4); }
   .stage__item.is-active .im--thumbs { animation: index-scroll 12s var(--ease-io) 1.2s infinite alternate; }
