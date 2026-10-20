@@ -4,6 +4,8 @@
    The form posts to Formspree in the background; without JS it posts normally.
    Meta Pixel ready: when a Pixel is installed later, a sent request fires the
    standard Lead event (reserved for mockup requests, see growth/prelaunch-audit.md).
+   A request that reaches Formspree also fires GA4 generate_lead (bots caught by the
+   honeypot don't).
    ========================================================================== */
 (() => {
   const d = document;
@@ -122,6 +124,7 @@
     try {
       const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(String(res.status));
+      try { window.gtag && gtag('event', 'generate_lead', { form: 'mockup_request', timing: looking ? 'looking' : 'ready', language: d.documentElement.lang }); } catch (_) {}
       done(looking ? 'looking' : 'ready');
     } catch (err) {
       fail.hidden = false;
