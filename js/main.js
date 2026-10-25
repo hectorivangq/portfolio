@@ -360,38 +360,59 @@
   });
 
   /* ---------- Home before and after: pin the band, flatten the screen, wipe old into new ----------
-     One note at a time follows the wipe; the closing line and buttons land at the end. */
+     One note at a time follows the wipe. Then more live sites deal onto the same screen and phone,
+     each new page sliding up over the last, with its name under the frame. The closing line and
+     buttons land at the end. */
   d.querySelectorAll('[data-ba]').forEach((ba) => {
     ba.classList.add('is-scrub');
     ba.style.setProperty('--pos', 0);
     const notes = [...ba.querySelectorAll('.ba__note')];
+    const caps = [...ba.querySelectorAll('.ba__cap')];
     const frame = ba.querySelector('.ba__frame');
     const phone = ba.querySelector('.ba__phone');
-    let step = -1;
-    const setStep = (n, done) => {
+    const deskCards = [...ba.querySelectorAll('.ba__screen .ba__card')];
+    const phoneCards = [...ba.querySelectorAll('.ba__phone .ba__card')];
+    gsap.set([...deskCards, ...phoneCards], { y: 0, yPercent: 101 });
+    let step = -1, cap = -2;
+    const setStep = (n, c, done) => {
       ba.classList.toggle('is-done', done);
+      if (c !== cap) { cap = c; caps.forEach((el, i) => el.classList.toggle('is-active', i === c)); }
       if (n === step) return;
       step = n;
       ba.dataset.step = n;
       notes.forEach((el, i) => el.classList.toggle('is-active', i === n));
     };
-    setStep(0, false);
-    const pos = { v: 0 };
+    setStep(0, -1, false);
+    const pos = { v: 0 }, dk = { v: 0 };
     const mm = gsap.matchMedia();
     mm.add({ wide: '(min-width: 60rem)', narrow: '(max-width: 59.99rem)' }, (ctx) => {
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         scrollTrigger: {
-          trigger: ba, start: 'top top', end: ctx.conditions.wide ? '+=220%' : '+=170%', pin: ba.querySelector('.ba__pin'), scrub: 0.7,
+          trigger: ba, start: 'top top', end: ctx.conditions.wide ? '+=380%' : '+=300%', pin: ba.querySelector('.ba__pin'), scrub: 0.7,
         },
         // The scrubbed timeline (not the raw scroll) decides the note, so text and picture stay in step
-        onUpdate: () => setStep(pos.v < 0.12 ? 0 : pos.v < 0.9 ? 1 : 2, tl.progress() > 0.9),
+        onUpdate: () => {
+          const n = pos.v < 0.12 ? 0 : pos.v < 0.9 ? 1 : dk.v < 0.5 ? 2 : 3;
+          setStep(n, dk.v < 0.5 ? -1 : Math.min(caps.length - 1, Math.round(dk.v) - 1), tl.progress() > 0.94);
+        },
       });
       tl.fromTo(frame, { rotateX: 14, scale: 0.9, transformPerspective: 1600, y: 30 }, { rotateX: 0, scale: 1, y: 0, duration: 0.16, ease: 'power2.out' })
         .fromTo(phone, { yPercent: 40, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.16, ease: 'power2.out' }, 0.04)
-        .to(pos, { v: 1, duration: 0.62, onUpdate: () => ba.style.setProperty('--pos', pos.v) }, 0.2)
-        .to({}, { duration: 0.18 });
-      return () => { pos.v = 0; ba.style.setProperty('--pos', 0); };
+        .to(pos, { v: 1, duration: 0.5, onUpdate: () => ba.style.setProperty('--pos', pos.v) }, 0.2);
+      // The deck: each site slides up over the one before, which settles back a little
+      const start = 0.8, gap = 0.2, dur = 0.14;
+      deskCards.forEach((card, i) => {
+        const at = start + i * gap;
+        const pair = [card, phoneCards[i]].filter(Boolean);
+        tl.fromTo(pair, { y: 0, yPercent: 101 }, { y: 0, yPercent: 0, duration: dur, ease: 'power2.out' }, at);  // y: 0 clears the CSS translate GSAP would read as pixels
+        const prev = [deskCards[i - 1], phoneCards[i - 1]].filter(Boolean);
+        if (i === 0) prev.push(...ba.querySelectorAll('.ba__after .ba__img'));
+        if (prev.length) tl.to(prev, { scale: 0.92, duration: dur, ease: 'power2.out' }, at);
+      });
+      tl.to(dk, { v: deskCards.length, duration: deskCards.length * gap, ease: 'none' }, start - (gap - dur))
+        .to({}, { duration: 0.22 });
+      return () => { pos.v = 0; dk.v = 0; ba.style.setProperty('--pos', 0); };
     });
   });
 
