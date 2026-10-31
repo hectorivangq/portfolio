@@ -696,7 +696,7 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 .cs-back:hover { color: var(--paper); }
 .cs-back .arrow { transition: transform var(--d-base) var(--ease-out); }
 .cs-back:hover .arrow { transform: translateX(-3px); }
-.cs-status { display: flex; width: max-content; margin-top: var(--s-7); }
+.cs-status { display: flex; width: max-content; max-width: 100%; margin-top: var(--s-7); }
 .cs-title { margin-top: var(--s-4); font-family: var(--f-display); font-weight: 400; font-size: clamp(3.5rem, 10.5vw, 10rem); line-height: 0.9; letter-spacing: var(--track-display); text-wrap: balance; }
 .cs-intro { display: grid; gap: var(--s-5); margin-top: var(--s-6); }
 @media (min-width: 60rem) { .cs-intro { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: var(--s-8); } }
@@ -727,9 +727,9 @@ html.motion-ready [data-reveal], html.motion-ready [data-hero-in], html.motion-r
 @media (min-width: 60rem) { .cs-story { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .cs-did { display: grid; gap: var(--s-4); margin-top: var(--s-8); }
 .cs-did__title { font-size: var(--t-eyebrow); font-weight: 650; font-stretch: 118%; letter-spacing: var(--track-eyebrow); text-transform: uppercase; }
-.cs-did ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
-.cs-did li { font-family: var(--f-display); font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1.05; }
-.cs-did li + li::before { content: ""; display: inline-block; width: 0.28em; height: 0.28em; margin-right: var(--s-5); border-radius: 50%; background: var(--brick); vertical-align: middle; transform: translateY(-0.12em); }
+.cs-did ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.cs-did li { display: flex; align-items: flex-start; gap: 0.6em; font-family: var(--f-display); font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1.05; }
+.cs-did li::before { content: ""; flex: none; width: 0.28em; height: 0.28em; margin-top: 0.385em; border-radius: 50%; background: var(--brick); }
 .cs-quote { margin-top: var(--s-8); }
 @media (min-width: 60rem) { .cs-quote { grid-template-columns: 16rem minmax(0, 1fr); } }
 /* Next project: the whole band is the link */
