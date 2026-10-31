@@ -27,6 +27,47 @@
     d.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) { setNav(false); toggle.focus(); } });
   }
 
+  /* ---------- Review row: arrows, count and swipe, all on one native scroller ---------- */
+  d.querySelectorAll('[data-quotes]').forEach((row) => {
+    const track = row.querySelector('.quotes__track');
+    const slides = [...track.querySelectorAll('.quote')];
+    const now = row.querySelector('[data-q-now]');
+    const fill = row.querySelector('[data-q-fill]');
+    const prev = row.querySelector('[data-q-prev]');
+    const next = row.querySelector('[data-q-next]');
+    let cur = -1;
+    const go = (i) => track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: reduce ? 'auto' : 'smooth' });
+    const sync = () => {
+      const x = track.scrollLeft + slides[0].offsetLeft;
+      const w = track.clientWidth;
+      let i = 0;
+      slides.forEach((s, n) => {
+        const gap = Math.abs(s.offsetLeft - x);
+        if (gap < Math.abs(slides[i].offsetLeft - x)) i = n;
+        if (!reduce) s.style.setProperty('--q', String(1 - Math.min(gap / w, 1) * 0.8));
+      });
+      if (i === cur) return;
+      cur = i;
+      row.__quoteNow = i;
+      now.textContent = i + 1;
+      fill.style.setProperty('--p', String((i + 1) / slides.length));
+      prev.setAttribute('aria-disabled', String(i === 0));
+      next.setAttribute('aria-disabled', String(i === slides.length - 1));
+      row.dispatchEvent(new CustomEvent('quote:active', { detail: i }));
+    };
+    prev.addEventListener('click', () => { if (cur > 0) go(cur - 1); });
+    next.addEventListener('click', () => { if (cur < slides.length - 1) go(cur + 1); });
+    let queued = false;
+    track.addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; sync(); });
+    }, { passive: true });
+    addEventListener('resize', sync);
+    row.querySelector('.quotes__bar').hidden = false;
+    sync();
+  });
+
   // Header state: compact on scroll, hide on scroll down, show on scroll up
   const header = d.querySelector('.site-header');
   let lastY = 0;
@@ -505,10 +546,28 @@
   }
 
   /* ---------- Testimonials: words fill in as you read ---------- */
-  d.querySelectorAll('.quote__text').forEach((q) => {
+  const wrapWords = (q) => {
     const text = q.textContent.trim().replace(/\s+/g, ' ');
     q.innerHTML = `<span class="visually-hidden">${text}</span><span aria-hidden="true">${text.split(' ').map((w) => `<span class="fill-word">${w}</span>`).join(' ')}</span>`;
-    gsap.fromTo(q.querySelectorAll('.fill-word'), { opacity: 0.5 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: q, start: 'top 82%', end: 'bottom 55%', scrub: true } });
+    return q.querySelectorAll('.fill-word');
+  };
+  d.querySelectorAll('.quote__text').forEach((q) => {
+    if (q.closest('[data-quotes]')) return;
+    gsap.fromTo(wrapWords(q), { opacity: 0.5 }, { opacity: 1, ease: 'none', stagger: 0.1, scrollTrigger: { trigger: q, start: 'top 82%', end: 'bottom 55%', scrub: true } });
+  });
+  // In the review row each voice fills in the first time it's shown
+  d.querySelectorAll('[data-quotes]').forEach((row) => {
+    const seen = new Set();
+    const slides = [...row.querySelectorAll('.quote')];
+    const words = slides.map((s) => wrapWords(s.querySelector('.quote__text')));
+    const fill = (i) => {
+      if (seen.has(i)) return;
+      seen.add(i);
+      gsap.fromTo(words[i], { opacity: 0.25 }, { opacity: 1, duration: 0.5, ease: 'none', stagger: 0.016 });
+    };
+    gsap.set(words.flatMap((w) => [...w]), { opacity: 0.25 });
+    ScrollTrigger.create({ trigger: row, start: 'top 78%', once: true, onEnter: () => fill(row.__quoteNow || 0) });
+    row.addEventListener('quote:active', (e) => { if (seen.size) fill(e.detail); });
   });
 
   /* ---------- Process: the rule draws across as the steps enter ---------- */

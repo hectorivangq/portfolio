@@ -25,7 +25,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/css/styles.css?v=35">
+<link rel="stylesheet" href="/css/styles.css?v=36">
 <link rel="stylesheet" href="/css/mockup.css?v=3">
 <script>
 /* Hide animated elements before first paint only when motion will run. */
@@ -150,13 +150,26 @@
 <section class="section" aria-labelledby="mq-title">
   <div class="container">
     <div class="section-head"><p class="eyebrow" data-reveal>Lo que dicen</p><h2 class="h-section" id="mq-title" data-split>EN SUS PALABRAS.</h2></div>
-    <div class="quotes"><figure class="quote">
-  <figcaption class="quote__who"><span class="quote__mark" aria-hidden="true">“</span><span class="quote__name">Erron Taylor</span><span class="quote__role">Founder, Sharpline Elite Services</span></figcaption>
+    <div class="quotes quotes--slider" data-quotes role="region" aria-roledescription="carousel" aria-label="En sus palabras.">
+  <div class="quotes__track" tabindex="0"><figure class="quote" role="group" aria-roledescription="slide" aria-label="1 de 3">
+  <figcaption class="quote__who"><span class="quote__mark" aria-hidden="true">“</span><span class="quote__name">Brittanie</span><span class="quote__role">Fundadora, The Binky Burrow</span></figcaption>
+  <blockquote class="quote__text" lang="en">I felt like you understood exactly what I was asking for and thinking up without having to go into detail. The website is absolutely exactly what I was dreaming up in my head, you were able to put it together flawlessly. You are always very quick to respond and I was impressed how fast everything was set up. I am highly impressed and happy to refer you to anyone.</blockquote>
+</figure><figure class="quote" role="group" aria-roledescription="slide" aria-label="2 de 3">
+  <figcaption class="quote__who"><span class="quote__mark" aria-hidden="true">“</span><span class="quote__name">Erron Taylor</span><span class="quote__role">Fundador, Sharpline Elite Services</span></figcaption>
   <blockquote class="quote__text" lang="en">Hector is really good at making websites. He made a website for my business that made it easy for me to get leads and for them to book a consultation call with me. I highly recommend working with him. He will definitely get you the results your looking for!</blockquote>
-</figure><figure class="quote">
-  <figcaption class="quote__who"><span class="quote__mark" aria-hidden="true">“</span><span class="quote__name">Kelly Arzate</span><span class="quote__role">Owner, Exklusive Rentals</span></figcaption>
+</figure><figure class="quote" role="group" aria-roledescription="slide" aria-label="3 de 3">
+  <figcaption class="quote__who"><span class="quote__mark" aria-hidden="true">“</span><span class="quote__name">Kelly Arzate</span><span class="quote__role">Dueña, Exklusive Rentals</span></figcaption>
   <blockquote class="quote__text" lang="en">Hector helped me build a professional website for my company that directs my clientele directly to my fleet, my payment methods and he included a page that consists of all my rules and regulations and guidelines. What AI would&#x27;ve made choppy and incorrect he made perfect and accurate! Not a detail missing.</blockquote>
-</figure></div><p class="disclosure" data-reveal>Los sitios web de Sharpline, Exklusive Rentals y College Conversations fueron proyectos iniciales que hice sin costo. Testimonios en inglés, tal como los escribieron.</p>
+</figure></div>
+  <div class="quotes__bar" hidden>
+    <p class="quotes__count" aria-live="polite"><span class="quotes__now" data-q-now>1</span> <span class="quotes__total">de 3</span></p>
+    <div class="quotes__progress" aria-hidden="true"><span data-q-fill></span></div>
+    <div class="quotes__nav">
+      <button class="btn btn--ghost quotes__btn quotes__btn--prev" type="button" data-q-prev aria-label="Reseña anterior"><svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <button class="btn btn--ghost quotes__btn" type="button" data-q-next aria-label="Reseña siguiente"><svg class="arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    </div>
+  </div>
+</div><p class="disclosure" data-reveal>Los sitios web de Sharpline, Exklusive Rentals y College Conversations fueron proyectos iniciales que hice sin costo. Testimonios en inglés, tal como los escribieron.</p>
   </div>
 </section>
 <section class="section on-paper-2" aria-labelledby="mo-title">
@@ -214,7 +227,7 @@
 <script src="/js/gsap.min.js" defer></script>
 <script src="/js/ScrollTrigger.min.js" defer></script>
 <script src="/js/lenis.min.js" defer></script>
-<script src="/js/main.js?v=22" defer></script>
+<script src="/js/main.js?v=23" defer></script>
 <script src="/js/mockup.js?v=5" defer></script>
 </body>
 </html>

@@ -379,6 +379,21 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .quote__text { font-family: var(--f-serif); font-style: italic; font-size: var(--t-quote); line-height: 1.24; letter-spacing: -0.005em; max-width: 40ch; text-wrap: pretty; }
 .quote__text .fill-word { opacity: var(--o, 1); transition: none; }
 .quote__mark { font-family: var(--f-display); font-size: 5rem; line-height: 0.6; color: var(--brick); height: 2.25rem; }
+/* Reviews with more than one voice: one at a time, the visitor sets the pace */
+.quotes--slider { grid-template-columns: minmax(0, 1fr); gap: var(--s-6); padding-top: var(--s-5); border-top: var(--hair); }
+.quotes__track { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 100%; gap: var(--s-7); overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none; }
+.quotes__track::-webkit-scrollbar { display: none; }
+.quotes__track .quote { padding-top: 0; border-top: 0; min-width: 0; align-content: start; scroll-snap-align: start; scroll-snap-stop: always; opacity: var(--q, 1); }
+.quotes__bar { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--s-5); }
+.quotes__bar[hidden] { display: none; }
+.quotes__count { display: flex; align-items: baseline; gap: 0.5em; font-size: var(--t-small); color: var(--muted); white-space: nowrap; }
+.quotes__now { font-family: var(--f-display); font-size: clamp(1.5rem, 2.6vw, 2.25rem); line-height: 1; color: var(--text); }
+.quotes__progress { position: relative; border-top: var(--hair); }
+.quotes__progress span { position: absolute; left: 0; right: 0; top: -2px; height: 3px; background: var(--brick); transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform var(--d-base) var(--ease-out); }
+.quotes__nav { display: flex; gap: var(--s-2); }
+.quotes__btn { width: 3.25rem; padding: 0; }
+.quotes__btn--prev .arrow { rotate: 180deg; }
+.quotes__btn[aria-disabled="true"] { opacity: 0.3; pointer-events: none; }
 .disclosure { font-size: var(--t-caption); color: var(--muted); margin-top: var(--s-2); }
 
 /* ---------- Process ---------- */
