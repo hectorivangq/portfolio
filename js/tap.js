@@ -3,7 +3,8 @@
    the free video test form. Runs after main.js (GSAP and ScrollTrigger are
    already loaded there). The form posts to Formspree in the background;
    without JS it posts normally. No Meta Pixel event here: Lead stays
-   reserved for mockup requests.
+   reserved for mockup requests. A request that reaches Formspree fires GA4
+   generate_lead (form: 3_tap_test); honeypot hits and failed sends don't.
    ========================================================================== */
 (() => {
   const d = document;
@@ -145,6 +146,7 @@
     try {
       const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(String(res.status));
+      try { window.gtag && gtag('event', 'generate_lead', { form: '3_tap_test', language: d.documentElement.lang }); } catch (_) {}
       done();
     } catch (err) {
       fail.hidden = false;
